@@ -1,0 +1,7 @@
+type Query {
+  basicInformation: BasicInformation!
+}
+
+type BasicInformation {
+  age: Int!
+}
