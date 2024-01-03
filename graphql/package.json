@@ -1,8 +1,6 @@
 {
   "name": "graphql",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "packageManager": "pnpm@8.13.1",
   "scripts": {
     "lint": "graphql-schema-linter"
   },
