@@ -1,0 +1,18 @@
+on:
+  push:
+    paths:
+      - graphql/**
+defaults:
+  run:
+    working-directory: ./graphql
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          package_json_file: graphql/package.json
+          run_install: true
+      - run: pnpm lint
