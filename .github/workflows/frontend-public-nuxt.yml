@@ -14,4 +14,5 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           package_json_file: frontend/public/nuxt/package.json
+          run_install: true
       - run: pnpm lint
