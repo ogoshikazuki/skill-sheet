@@ -1,0 +1,13 @@
+on:
+  push:
+    paths:
+      - backend/go/**
+defaults:
+  run:
+    working-directory: ./backend/go
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dominikh/staticcheck-action@v1
