@@ -22,7 +22,7 @@ const defaultPort = "8080"
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		log.Print(err)
 	}
 
 	if err := di.Di(); err != nil {
