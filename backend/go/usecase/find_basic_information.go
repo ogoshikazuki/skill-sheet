@@ -1,14 +1,14 @@
-package usecases
+package usecase
 
 import (
 	"context"
 
-	"github.com/ogoshikazuki/skill-sheet/entities"
+	"github.com/ogoshikazuki/skill-sheet/entity"
 )
 
 type (
 	FindBasicInformationOutput struct {
-		basicInformation entities.BasicInformation
+		BasicInformation entity.BasicInformation
 	}
 
 	FindBasicInformationUsecase interface {
@@ -16,11 +16,11 @@ type (
 	}
 
 	findBasicInformationInteractor struct {
-		repository entities.BasicInformationRepository
+		repository entity.BasicInformationRepository
 	}
 )
 
-func NewFindBasicInformationUsecase(repository entities.BasicInformationRepository) FindBasicInformationUsecase {
+func NewFindBasicInformationUsecase(repository entity.BasicInformationRepository) FindBasicInformationUsecase {
 	return findBasicInformationInteractor{
 		repository: repository,
 	}
@@ -33,6 +33,6 @@ func (interactor findBasicInformationInteractor) Handle(context context.Context)
 	}
 
 	return FindBasicInformationOutput{
-		basicInformation: basicInformation,
+		BasicInformation: basicInformation,
 	}, nil
 }

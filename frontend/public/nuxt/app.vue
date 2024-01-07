@@ -2,7 +2,7 @@
   <div>
     <h1>基本情報</h1>
     <ul>
-      <li>年齢: {{ data?.basicInformation?.age }}</li>
+      <li>生年月日: {{ data?.basicInformation?.birthday }}</li>
     </ul>
   </div>
 </template>
@@ -12,14 +12,14 @@
 const query = gql`
   query {
     basicInformation {
-      age
+      birthday
     }
   }
 `;
 
 type BasicInformationResult = {
   basicInformation: {
-    age: number;
+    birthday: string;
   };
 };
 

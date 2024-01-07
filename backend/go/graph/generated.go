@@ -46,7 +46,7 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	BasicInformation struct {
-		Age func(childComplexity int) int
+		Birthday func(childComplexity int) int
 	}
 
 	Query struct {
@@ -77,12 +77,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "BasicInformation.age":
-		if e.complexity.BasicInformation.Age == nil {
+	case "BasicInformation.birthday":
+		if e.complexity.BasicInformation.Birthday == nil {
 			break
 		}
 
-		return e.complexity.BasicInformation.Age(childComplexity), true
+		return e.complexity.BasicInformation.Birthday(childComplexity), true
 
 	case "Query.basicInformation":
 		if e.complexity.Query.BasicInformation == nil {
@@ -185,8 +185,10 @@ var sources = []*ast.Source{
 }
 
 type BasicInformation {
-  age: Int!
+  birthday: Date!
 }
+
+scalar Date
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -248,8 +250,8 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _BasicInformation_age(ctx context.Context, field graphql.CollectedField, obj *model.BasicInformation) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BasicInformation_age(ctx, field)
+func (ec *executionContext) _BasicInformation_birthday(ctx context.Context, field graphql.CollectedField, obj *model.BasicInformation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BasicInformation_birthday(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -262,7 +264,7 @@ func (ec *executionContext) _BasicInformation_age(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Age, nil
+		return obj.Birthday, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -274,19 +276,19 @@ func (ec *executionContext) _BasicInformation_age(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNDate2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_BasicInformation_age(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_BasicInformation_birthday(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "BasicInformation",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Date does not have child fields")
 		},
 	}
 	return fc, nil
@@ -331,8 +333,8 @@ func (ec *executionContext) fieldContext_Query_basicInformation(ctx context.Cont
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "age":
-				return ec.fieldContext_BasicInformation_age(ctx, field)
+			case "birthday":
+				return ec.fieldContext_BasicInformation_birthday(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BasicInformation", field.Name)
 		},
@@ -2261,8 +2263,8 @@ func (ec *executionContext) _BasicInformation(ctx context.Context, sel ast.Selec
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BasicInformation")
-		case "age":
-			out.Values[i] = ec._BasicInformation_age(ctx, field, obj)
+		case "birthday":
+			out.Values[i] = ec._BasicInformation_birthday(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2716,13 +2718,13 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalNDate2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
+func (ec *executionContext) marshalNDate2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalString(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

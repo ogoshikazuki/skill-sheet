@@ -7,13 +7,19 @@ package graph
 import (
 	"context"
 
+	"github.com/ogoshikazuki/skill-sheet/di"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
 )
 
 // BasicInformation is the resolver for the basicInformation field.
 func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInformation, error) {
+	output, err := di.Usecases.FindBasicInformationUsecase.Handle(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	return &model.BasicInformation{
-		Age: 32,
+		Birthday: output.BasicInformation.Birthday.String(),
 	}, nil
 }
 

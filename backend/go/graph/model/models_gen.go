@@ -3,7 +3,7 @@
 package model
 
 type BasicInformation struct {
-	Age int `json:"age"`
+	Birthday string `json:"birthday"`
 }
 
 type Query struct {

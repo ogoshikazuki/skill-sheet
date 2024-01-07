@@ -3,5 +3,7 @@ type Query {
 }
 
 type BasicInformation {
-  age: Int!
+  birthday: Date!
 }
+
+scalar Date
