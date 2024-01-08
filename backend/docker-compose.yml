@@ -2,8 +2,7 @@ version: "3"
 services:
   go:
     build:
-      context: .
-      dockerfile: ./docker/go/Dockerfile
+      context: ./go
     ports:
       - 8080:8080
   postgres:
