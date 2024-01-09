@@ -11,23 +11,19 @@ type (
 		BasicInformation entity.BasicInformation
 	}
 
-	FindBasicInformationUsecase interface {
-		Handle(context.Context) (FindBasicInformationOutput, error)
-	}
-
-	findBasicInformationInteractor struct {
+	FindBasicInformationUsecase struct {
 		repository entity.BasicInformationRepository
 	}
 )
 
 func NewFindBasicInformationUsecase(repository entity.BasicInformationRepository) FindBasicInformationUsecase {
-	return findBasicInformationInteractor{
+	return FindBasicInformationUsecase{
 		repository: repository,
 	}
 }
 
-func (interactor findBasicInformationInteractor) Handle(context context.Context) (FindBasicInformationOutput, error) {
-	basicInformation, err := interactor.repository.Find(context)
+func (f FindBasicInformationUsecase) Handle(context context.Context) (FindBasicInformationOutput, error) {
+	basicInformation, err := f.repository.Find(context)
 	if err != nil {
 		return FindBasicInformationOutput{}, err
 	}

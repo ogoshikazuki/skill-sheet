@@ -1,7 +1,8 @@
-package main
+package server
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -10,28 +11,25 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/cockroachdb/errors"
-	"github.com/joho/godotenv"
-	"github.com/ogoshikazuki/skill-sheet/di"
 	"github.com/ogoshikazuki/skill-sheet/graph"
 	"github.com/rs/cors"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
-const defaultPort = "8080"
+type Server struct {
+	logger *log.Logger
+}
 
-func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Print(err)
+func NewServer(logger *log.Logger) Server {
+	return Server{
+		logger: logger,
 	}
+}
 
-	if err := di.Di(); err != nil {
-		log.Fatal(err)
-	}
-
+func (s Server) Start() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = defaultPort
+		log.Fatal("The PORT environment variable is not set.")
 	}
 
 	c := cors.New(cors.Options{
@@ -49,4 +47,5 @@ func main() {
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+
 }
