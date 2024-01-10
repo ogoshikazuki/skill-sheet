@@ -19,7 +19,7 @@ func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInfor
 	}
 
 	return &model.BasicInformation{
-		Birthday: output.BasicInformation.Birthday.String(),
+		Birthday: output.BasicInformation.Birthday,
 	}, nil
 }
 

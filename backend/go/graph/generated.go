@@ -13,7 +13,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
+	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -276,9 +278,9 @@ func (ec *executionContext) _BasicInformation_birthday(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(entity.Date)
 	fc.Result = res
-	return ec.marshalNDate2string(ctx, field.Selections, res)
+	return ec.marshalNDate2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_BasicInformation_birthday(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2718,13 +2720,13 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNDate2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalString(v)
+func (ec *executionContext) unmarshalNDate2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx context.Context, v interface{}) (entity.Date, error) {
+	res, err := scalar.UnmarshalDate(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNDate2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalString(v)
+func (ec *executionContext) marshalNDate2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx context.Context, sel ast.SelectionSet, v entity.Date) graphql.Marshaler {
+	res := scalar.MarshalDate(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

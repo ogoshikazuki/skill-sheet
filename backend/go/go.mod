@@ -4,11 +4,11 @@ go 1.21.5
 
 require (
 	github.com/99designs/gqlgen v0.17.42
+	github.com/cockroachdb/errors v1.11.1
 	github.com/vektah/gqlparser/v2 v2.5.10
 )
 
 require (
-	github.com/cockroachdb/errors v1.11.1 // indirect
 	github.com/cockroachdb/logtags v0.0.0-20230118201751-21c54148d20b // indirect
 	github.com/cockroachdb/redact v1.1.5 // indirect
 	github.com/getsentry/sentry-go v0.18.0 // indirect

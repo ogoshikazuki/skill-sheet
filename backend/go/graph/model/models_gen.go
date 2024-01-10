@@ -2,8 +2,12 @@
 
 package model
 
+import (
+	"github.com/ogoshikazuki/skill-sheet/entity"
+)
+
 type BasicInformation struct {
-	Birthday string `json:"birthday"`
+	Birthday entity.Date `json:"birthday"`
 }
 
 type Query struct {
