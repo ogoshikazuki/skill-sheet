@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"os"
 
 	"github.com/cockroachdb/errors"
 	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
@@ -38,8 +37,8 @@ func (handler *sqlHandler) Close() error {
 	return handler.db.Close()
 }
 
-func NewSqlHandler() (repository.Sqlhandler, error) {
-	db, err := sql.Open("postgres", getConnectionString())
+func NewSqlHandler(host, port, user, password, dbname string) (repository.Sqlhandler, error) {
+	db, err := sql.Open("postgres", getConnectionString(host, port, user, password, dbname))
 	if err != nil {
 		return nil, err
 	}
@@ -52,11 +51,11 @@ type result struct {
 }
 
 func (r *result) LastInsertId() (int64, error) {
-	return r.LastInsertId()
+	return r.result.LastInsertId()
 }
 
 func (r *result) RowsAffected() (int64, error) {
-	return r.RowsAffected()
+	return r.result.RowsAffected()
 }
 
 type rows struct {
@@ -81,11 +80,12 @@ func (r *rows) Close() error {
 	return r.rows.Close()
 }
 
-func getConnectionString() string {
-	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_DBNAME"),
+func getConnectionString(host, port, user, password, dbname string) string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		user,
+		password,
+		host,
+		port,
+		dbname,
 	)
 }
