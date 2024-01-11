@@ -16,7 +16,7 @@ type sqlHandler struct {
 }
 
 func (handler *sqlHandler) ExecContext(ctx context.Context, query string, args ...any) (repository.Result, error) {
-	r, err := handler.db.ExecContext(ctx, query, args)
+	r, err := handler.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (handler *sqlHandler) Close() error {
 	return handler.db.Close()
 }
 
-func NewSqlHandler(host, port, user, password, dbname string) (repository.Sqlhandler, error) {
+func NewSqlHandler(host, port, user, password, dbname string) (repository.SqlHandler, error) {
 	db, err := sql.Open("postgres", getConnectionString(host, port, user, password, dbname))
 	if err != nil {
 		return nil, err

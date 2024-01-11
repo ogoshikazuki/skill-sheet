@@ -8,7 +8,7 @@ import (
 )
 
 type basicInformationRepository struct {
-	sqlHandler Sqlhandler
+	sqlHandler SqlHandler
 }
 
 func (repository basicInformationRepository) Find(ctx context.Context) (entity.BasicInformation, error) {
@@ -32,6 +32,6 @@ LIMIT 1
 	return entity.BasicInformation{Birthday: entity.NewDateFromTime(birthday)}, nil
 }
 
-func NewBasicInformationRepository(sqlHandler Sqlhandler) entity.BasicInformationRepository {
+func NewBasicInformationRepository(sqlHandler SqlHandler) entity.BasicInformationRepository {
 	return basicInformationRepository{sqlHandler: sqlHandler}
 }

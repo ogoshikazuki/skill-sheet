@@ -49,6 +49,9 @@ func TestFindBasicInformationUsecase(t *testing.T) {
 
 			ctx := context.Background()
 			output, err := usecase.NewFindBasicInformationUsecase(&repository).Handle(ctx)
+			if len(repository.FindCalls()) != 1 {
+				t.Errorf("actual: %d", len(repository.FindCalls()))
+			}
 			if output != tt.expectedOutput {
 				t.Errorf("expected: %+v, actual: %+v", tt.expectedOutput, output)
 			}

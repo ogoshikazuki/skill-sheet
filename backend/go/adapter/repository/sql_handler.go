@@ -3,7 +3,7 @@ package repository
 import "context"
 
 type (
-	Sqlhandler interface {
+	SqlHandler interface {
 		ExecContext(ctx context.Context, query string, args ...any) (Result, error)
 		QueryContext(ctx context.Context, query string, args ...any) (Rows, error)
 		Close() error

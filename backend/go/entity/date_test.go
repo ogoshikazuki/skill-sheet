@@ -43,9 +43,11 @@ func TestDateIsValid(t *testing.T) {
 }
 
 func TestNewDateFromTime(t *testing.T) {
-	time, _ := time.Parse("2006-01-02", "1991-07-01")
+	expected := "1991-07-01"
+
+	time, _ := time.Parse("2006-01-02", expected)
 	date := entity.NewDateFromTime(time)
-	if date != "1991-07-01" {
-		t.Error()
+	if date != entity.Date(expected) {
+		t.Errorf("expected: %s, actual: %s", expected, date)
 	}
 }
