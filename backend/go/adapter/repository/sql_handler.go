@@ -7,6 +7,7 @@ type (
 		ExecContext(ctx context.Context, query string, args ...any) (Result, error)
 		QueryContext(ctx context.Context, query string, args ...any) (Rows, error)
 		Close() error
+		ExecContextFromFile(ctx context.Context, path string) ([]Result, error)
 	}
 
 	Result interface {

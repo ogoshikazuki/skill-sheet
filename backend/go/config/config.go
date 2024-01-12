@@ -7,6 +7,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func init() {
+	godotenv.Load()
+}
+
 type Config struct {
 	Port              string
 	CorsAllowdOrigins []string
@@ -18,8 +22,6 @@ type Config struct {
 }
 
 func NewConfig() Config {
-	godotenv.Load()
-
 	return Config{
 		Port:              os.Getenv("PORT"),
 		CorsAllowdOrigins: strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),

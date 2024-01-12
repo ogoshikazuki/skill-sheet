@@ -17,3 +17,18 @@ jobs:
         with:
           working-directory: backend/go
           install-go: false
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: 'backend/go/go.mod'
+      - run: go test ./...

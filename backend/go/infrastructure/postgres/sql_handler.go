@@ -7,6 +7,7 @@ import (
 
 	"github.com/cockroachdb/errors"
 	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
+	"github.com/tanimutomo/sqlfile"
 
 	_ "github.com/lib/pq"
 )
@@ -35,6 +36,26 @@ func (handler *sqlHandler) QueryContext(ctx context.Context, query string, args 
 
 func (handler *sqlHandler) Close() error {
 	return handler.db.Close()
+}
+
+func (s *sqlHandler) ExecContextFromFile(ctx context.Context, path string) ([]repository.Result, error) {
+	sf := sqlfile.New()
+
+	if err := sf.Directory(path); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	res, err := sf.Exec(s.db)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	var results []repository.Result
+	for _, r := range res {
+		results = append(results, &result{r})
+	}
+
+	return results, nil
 }
 
 func NewSqlHandler(host, port, user, password, dbname string) (repository.SqlHandler, error) {
