@@ -28,4 +28,5 @@ module.exports = {
   rules: {
     "vue/multi-word-component-names": 0,
   },
+  ignorePatterns: ["*.generated.ts", "repository/types.ts"],
 };

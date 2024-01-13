@@ -10,11 +10,18 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "prettier --check . && eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
-    "lintfix": "prettier --write --list-different . && eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore --fix ."
+    "lintfix": "prettier --write --list-different . && eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore --fix .",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/cli": "5.0.0",
+    "@graphql-codegen/client-preset": "4.1.0",
+    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-vue-apollo": "^4.1.0",
     "@nuxtjs/apollo": "5.0.0-alpha.11",
+    "@parcel/watcher": "^2.3.0",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
     "@vue/eslint-config-prettier": "^9.0.0",
