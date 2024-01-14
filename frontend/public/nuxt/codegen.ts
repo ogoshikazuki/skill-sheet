@@ -2,15 +2,11 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   schema: "../../../graphql/*.graphqls",
-  documents: "./repository/**/*.graphql",
+  documents: "./graphql/*.graphql",
+  ignoreNoDocuments: true,
   generates: {
-    "repository/types.ts": { plugins: ["typescript"] },
-    "./repository/": {
-      preset: "near-operation-file",
-      presetConfig: {
-        baseTypesPath: "types.ts",
-      },
-      plugins: ["typescript-operations", "typescript-vue-apollo"],
+    "./graphql/index.ts": {
+      plugins: ["typescript", "typescript-operations", "typescript-vue-apollo"],
     },
   },
 };

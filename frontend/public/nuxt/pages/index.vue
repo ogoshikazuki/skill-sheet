@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import repositoryFactory from "~/repository/repositoryFactory";
+import { useBasicInformationQuery } from "~/graphql";
 
-const data = repositoryFactory.get("basicInformation").find();
+const data = useBasicInformationQuery().result;
 </script>
