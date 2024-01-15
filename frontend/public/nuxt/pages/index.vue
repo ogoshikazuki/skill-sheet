@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBasicInformationQuery } from "~/graphql";
+import { useBasicInformationQuery } from '~/graphql'
 
-const data = useBasicInformationQuery().result;
+const data = useBasicInformationQuery().result
 </script>

@@ -1,32 +1,30 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2021: true
   },
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:vue/vue3-essential",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:vue/vue3-essential',
+    '@nuxtjs/eslint-config-typescript'
   ],
   overrides: [
     {
       env: {
-        node: true,
+        node: true
       },
-      files: [".eslintrc.{js,cjs}"],
+      files: ['.eslintrc.{js,cjs}'],
       parserOptions: {
-        sourceType: "script",
-      },
-    },
+        sourceType: 'script'
+      }
+    }
   ],
   parserOptions: {
-    ecmaVersion: "latest",
-    parser: "@typescript-eslint/parser",
-    sourceType: "module",
+    ecmaVersion: 'latest',
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module'
   },
-  plugins: ["@typescript-eslint", "vue"],
-  rules: {
-    "vue/multi-word-component-names": 0,
-  },
-  ignorePatterns: ["*.generated.ts", "repository/types.ts"],
-};
+  plugins: ['@typescript-eslint', 'vue'],
+  ignorePatterns: ['graphql/index.ts']
+}

@@ -1,3 +1,2 @@
 pnpm-lock.yaml
-*.generated.ts
-repository/types.ts
+graphql/index.ts
