@@ -27,7 +27,6 @@
 useHead({
   script: [
     {
-      type: 'text/javascript',
       async: true,
       src: 'https://platform.twitter.com/widgets.js'
     }
