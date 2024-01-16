@@ -1,13 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar title="KOシステム">
+    <v-app-bar>
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-app-bar-title>KOシステム</v-app-bar-title>
       <v-btn
         icon="mdi-github"
         href="https://github.com/ogoshikazuki/skill-sheet"
         target="_blank"
       />
     </v-app-bar>
-    <v-navigation-drawer>
+    <v-navigation-drawer v-model="drawer">
       <v-list>
         <v-list-item>
           <a
@@ -24,6 +26,8 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from 'vuetify/lib/framework.mjs'
+
 useHead({
   script: [
     {
@@ -32,4 +36,7 @@ useHead({
     }
   ]
 })
+
+const { mobile } = useDisplay()
+const drawer = ref<boolean>(!mobile.value)
 </script>
