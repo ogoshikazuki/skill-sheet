@@ -8,7 +8,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "pnpm codegen && nuxt prepare",
     "lint": "eslint .",
     "tsc": "tsc",
     "codegen": "graphql-codegen --config codegen.ts"

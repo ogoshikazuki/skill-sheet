@@ -3,19 +3,13 @@
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>KOシステム</v-app-bar-title>
-      <v-btn
-        icon="mdi-github"
-        href="https://github.com/ogoshikazuki/skill-sheet"
-        target="_blank"
-      />
+      <v-btn icon="mdi-github" href="https://github.com/ogoshikazuki/skill-sheet" target="_blank" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer">
       <v-list>
         <v-list-item>
-          <a
-            class="twitter-timeline"
-            href="https://twitter.com/k_o_system?ref_src=twsrc%5Etfw"
-          >Tweets by k_o_system</a>
+          <a class="twitter-timeline" data-width="223" href="https://twitter.com/k_o_system?ref_src=twsrc%5Etfw">Tweets by
+            k_o_system</a>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
