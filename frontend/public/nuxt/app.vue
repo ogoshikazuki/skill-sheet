@@ -5,10 +5,10 @@
       <v-app-bar-title>KOシステム</v-app-bar-title>
       <v-btn icon="mdi-github" href="https://github.com/ogoshikazuki/skill-sheet" target="_blank" />
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
+    <v-navigation-drawer v-model="drawer" width="288">
       <v-list>
         <v-list-item>
-          <a class="twitter-timeline" data-width="223" href="https://twitter.com/k_o_system?ref_src=twsrc%5Etfw">Tweets by
+          <a class="twitter-timeline" href="https://twitter.com/k_o_system?ref_src=twsrc%5Etfw">Tweets by
             k_o_system</a>
         </v-list-item>
       </v-list>
