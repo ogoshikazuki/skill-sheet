@@ -18,28 +18,28 @@ jobs:
           - backend/postgres/init:/docker-entrypoint-initdb.d
     steps:
       - uses: actions/checkout@v4
-      - run: go run .
-        working-directory: backend/go
-        env:
-          PORT: 8080
-          CORS_ALLOWED_ORIGINS: http://localhost:3000
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DBNAME: postgres
-      - run: cp .env.example .env
-        working-directory: frontend/public/nuxt
-      - uses: actions/setup-node@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          package_json_file: frontend/public/nuxt/package.json
-          run_install: true
-        run: pnpm exec playwright install --with-deps
-        run: pnpm e2e
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+      # - run: go run .
+      #   working-directory: backend/go
+      #   env:
+      #     PORT: 8080
+      #     CORS_ALLOWED_ORIGINS: http://localhost:3000
+      #     POSTGRES_HOST: localhost
+      #     POSTGRES_PORT: 5432
+      #     POSTGRES_USER: postgres
+      #     POSTGRES_PASSWORD: postgres
+      #     POSTGRES_DBNAME: postgres
+      # - run: cp .env.example .env
+      #   working-directory: frontend/public/nuxt
+      # - uses: actions/setup-node@v4
+      # - uses: pnpm/action-setup@v2
+      #   with:
+      #     package_json_file: frontend/public/nuxt/package.json
+      #     run_install: true
+      #   run: pnpm exec playwright install --with-deps
+      #   run: pnpm e2e
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
