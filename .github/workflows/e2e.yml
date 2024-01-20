@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: 'backend/go/go.mod'
-      - run: go run .
+      - run: go run . &
         working-directory: backend/go
         env:
           PORT: 8080
@@ -33,7 +33,7 @@ jobs:
           POSTGRES_DBNAME: postgres
       - run: cp .env.example .env
         working-directory: frontend/public/nuxt
-      # - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
       # - uses: pnpm/action-setup@v2
       #   with:
       #     package_json_file: frontend/public/nuxt/package.json
