@@ -18,6 +18,9 @@ jobs:
           - /backend/postgres/init:/docker-entrypoint-initdb.d
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version-file: 'backend/go/go.mod'
       - run: go run .
         working-directory: backend/go
         env:
@@ -28,8 +31,8 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DBNAME: postgres
-      # - run: cp .env.example .env
-      #   working-directory: frontend/public/nuxt
+      - run: cp .env.example .env
+        working-directory: frontend/public/nuxt
       # - uses: actions/setup-node@v4
       # - uses: pnpm/action-setup@v2
       #   with:
