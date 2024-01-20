@@ -45,3 +45,9 @@ jobs:
           name: playwright-report
           path: frontend/public/nuxt/playwright-report/
           retention-days: 30
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: frontend/public/nuxt/test-results/
+          retention-days: 30
