@@ -2,8 +2,11 @@
   <v-app>
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-app-bar-title>KOシステム</v-app-bar-title>
+      <v-app-bar-title>
+        KOシステム
+      </v-app-bar-title>
       <v-btn icon="mdi-github" href="https://github.com/ogoshikazuki/skill-sheet" target="_blank" />
+      <v-btn icon="mdi-home" @click="navigateToHome" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="288">
       <v-list>
@@ -32,5 +35,9 @@ useHead({
 })
 
 const { mobile } = useDisplay()
-const drawer = ref<boolean>(!mobile.value)
+const drawer = ref(!mobile.value)
+
+const navigateToHome = () => {
+  navigateTo('/')
+}
 </script>
