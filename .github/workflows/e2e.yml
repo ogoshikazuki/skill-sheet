@@ -40,10 +40,12 @@ jobs:
           package_json_file: frontend/public/nuxt/package.json
           run_install: true
       - run: pnpm exec playwright install --with-deps
+        working-directory: frontend/public/nuxt
       - run: pnpm e2e
+        working-directory: frontend/public/nuxt
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: frontend/public/nuxt/playwright-report/
           retention-days: 30
