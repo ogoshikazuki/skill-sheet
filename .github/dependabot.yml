@@ -1,0 +1,22 @@
+ersion: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "docker"
+    directory: "/backend/go"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "github-actions"
+    directory: "/backend/go"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gomod"
+    directory: "/backend/go"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/frontend/public/nuxt"
+    schedule:
+      interval: "daily"
