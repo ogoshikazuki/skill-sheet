@@ -22,8 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          apt-get update
-          apt-get install --yes postgresql-client
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
       - run: psql -U postgres -d postgres -f 1.schema.sql
         working-directory: backend/postgres/init
       - run: psql -U postgres -d postgres -f 2.seed.sql
