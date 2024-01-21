@@ -1,7 +1,15 @@
 on:
   push:
+    branches:
+      - main
     paths:
       - graphql/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - graphql/**
+
 defaults:
   run:
     working-directory: ./graphql
