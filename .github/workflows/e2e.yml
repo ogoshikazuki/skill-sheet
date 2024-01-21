@@ -24,9 +24,9 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
-      - run: psql -U postgres -d postgres -f 1.schema.sql
+      - run: psql -h localhost -U postgres -d postgres -f 1.schema.sql
         working-directory: backend/postgres/init
-      - run: psql -U postgres -d postgres -f 2.seed.sql
+      - run: psql -h localhost -U postgres -d postgres -f 2.seed.sql
         working-directory: backend/postgres/init
       - uses: actions/setup-go@v4
         with:
