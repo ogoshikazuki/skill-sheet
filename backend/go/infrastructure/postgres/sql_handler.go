@@ -64,10 +64,6 @@ func NewSqlHandler(host, port, user, password, dbname string) (repository.SqlHan
 		return nil, err
 	}
 
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-
 	return &sqlHandler{db: db}, nil
 }
 
