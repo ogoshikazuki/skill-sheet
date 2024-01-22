@@ -5,7 +5,7 @@ go 1.21.5
 require (
 	github.com/99designs/gqlgen v0.17.43
 	github.com/cockroachdb/errors v1.11.1
-	github.com/matryer/moq v0.2.7
+	github.com/matryer/moq v0.3.3
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/vektah/gqlparser/v2 v2.5.11
 )
