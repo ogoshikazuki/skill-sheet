@@ -35,7 +35,7 @@ func (s Server) Start() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		s.logger.Printf("%+v", errors.Unwrap(err))
-		return graphql.DefaultErrorPresenter(ctx, err)
+		return graphql.DefaultErrorPresenter(ctx, errors.New("Internal Server Error"))
 	})
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
