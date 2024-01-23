@@ -16,7 +16,7 @@ type (
 	}
 
 	Rows interface {
-		Scan(dest any) error
+		Scan(dest ...any) error
 		Next() bool
 		Close() error
 	}

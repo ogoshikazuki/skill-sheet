@@ -6,6 +6,7 @@ import "context"
 
 type BasicInformation struct {
 	Birthday Date
+	Gender   Gender
 }
 
 type BasicInformationRepository interface {

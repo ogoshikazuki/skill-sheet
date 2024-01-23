@@ -18,6 +18,7 @@ func TestBasicInformationRepositoryFind(t *testing.T) {
 			sqlHandler: sqlHandler,
 			expect: entity.BasicInformation{
 				Birthday: "1991-07-01",
+				Gender:   entity.Male,
 			},
 			returnsErr: false,
 		},
