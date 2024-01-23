@@ -28,6 +28,13 @@ func NewServer(cfg config.Config, logger *log.Logger) Server {
 }
 
 func (s Server) Start() {
+	s.handleGraphQL()
+	s.handleGraphQLPlayground()
+
+	s.listen()
+}
+
+func (s Server) handleGraphQL() {
 	c := cors.New(cors.Options{
 		AllowedOrigins:   s.cfg.CorsAllowdOrigins,
 		AllowCredentials: true,
@@ -37,10 +44,14 @@ func (s Server) Start() {
 		s.logger.Printf("%+v", errors.Unwrap(err))
 		return graphql.DefaultErrorPresenter(ctx, errors.New("Internal Server Error"))
 	})
-
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", c.Handler(srv))
+}
 
+func (s Server) handleGraphQLPlayground() {
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+}
+
+func (s Server) listen() {
 	s.logger.Printf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
 	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, nil))
 }
