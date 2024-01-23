@@ -1,1 +1,1 @@
-INSERT INTO basic_information(birthday) VALUES('1991-07-01');
+INSERT INTO "basic_information"("birthday", "gender") VALUES('1991-07-01', 'MALE');
