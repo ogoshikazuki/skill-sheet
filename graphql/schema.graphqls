@@ -4,6 +4,12 @@ type Query {
 
 type BasicInformation {
   birthday: Date!
+  gender: Gender!
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
 
 scalar Date
