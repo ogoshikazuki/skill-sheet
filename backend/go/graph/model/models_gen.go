@@ -3,12 +3,58 @@
 package model
 
 import (
+	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/ogoshikazuki/skill-sheet/entity"
 )
 
 type BasicInformation struct {
 	Birthday entity.Date `json:"birthday"`
+	Gender   Gender      `json:"gender"`
 }
 
 type Query struct {
+}
+
+type Gender string
+
+const (
+	GenderMale   Gender = "MALE"
+	GenderFemale Gender = "FEMALE"
+)
+
+var AllGender = []Gender{
+	GenderMale,
+	GenderFemale,
+}
+
+func (e Gender) IsValid() bool {
+	switch e {
+	case GenderMale, GenderFemale:
+		return true
+	}
+	return false
+}
+
+func (e Gender) String() string {
+	return string(e)
+}
+
+func (e *Gender) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Gender(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Gender", str)
+	}
+	return nil
+}
+
+func (e Gender) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

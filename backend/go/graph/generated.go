@@ -49,6 +49,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	BasicInformation struct {
 		Birthday func(childComplexity int) int
+		Gender   func(childComplexity int) int
 	}
 
 	Query struct {
@@ -85,6 +86,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BasicInformation.Birthday(childComplexity), true
+
+	case "BasicInformation.gender":
+		if e.complexity.BasicInformation.Gender == nil {
+			break
+		}
+
+		return e.complexity.BasicInformation.Gender(childComplexity), true
 
 	case "Query.basicInformation":
 		if e.complexity.Query.BasicInformation == nil {
@@ -188,6 +196,12 @@ var sources = []*ast.Source{
 
 type BasicInformation {
   birthday: Date!
+  gender: Gender!
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
 
 scalar Date
@@ -296,6 +310,50 @@ func (ec *executionContext) fieldContext_BasicInformation_birthday(ctx context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _BasicInformation_gender(ctx context.Context, field graphql.CollectedField, obj *model.BasicInformation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BasicInformation_gender(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Gender, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.Gender)
+	fc.Result = res
+	return ec.marshalNGender2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BasicInformation_gender(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicInformation",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Gender does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_basicInformation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_basicInformation(ctx, field)
 	if err != nil {
@@ -337,6 +395,8 @@ func (ec *executionContext) fieldContext_Query_basicInformation(ctx context.Cont
 			switch field.Name {
 			case "birthday":
 				return ec.fieldContext_BasicInformation_birthday(ctx, field)
+			case "gender":
+				return ec.fieldContext_BasicInformation_gender(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BasicInformation", field.Name)
 		},
@@ -2270,6 +2330,11 @@ func (ec *executionContext) _BasicInformation(ctx context.Context, sel ast.Selec
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "gender":
+			out.Values[i] = ec._BasicInformation_gender(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2733,6 +2798,16 @@ func (ec *executionContext) marshalNDate2githubᚗcomᚋogoshikazukiᚋskillᚑs
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNGender2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (model.Gender, error) {
+	var res model.Gender
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNGender2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v model.Gender) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
