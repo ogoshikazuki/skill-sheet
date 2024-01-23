@@ -42,7 +42,7 @@ func (s Server) handleGraphQL() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		s.logger.Printf("%+v", errors.Unwrap(err))
-		return graphql.DefaultErrorPresenter(ctx, errors.New("Internal Server Error"))
+		return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
 	})
 	http.Handle("/query", c.Handler(srv))
 }
