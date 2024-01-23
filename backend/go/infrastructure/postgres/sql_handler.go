@@ -83,8 +83,8 @@ type rows struct {
 	rows *sql.Rows
 }
 
-func (r *rows) Scan(dest any) error {
-	err := r.rows.Scan(dest)
+func (r *rows) Scan(dest ...any) error {
+	err := r.rows.Scan(dest...)
 
 	if err != nil {
 		return errors.WithStack(err)
