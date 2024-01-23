@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { useBasicInformationQuery } from '~/graphql'
 
-const basicInformationQuery = useBasicInformationQuery().result
+const basicInformationQuery = useBasicInformationQuery()
 const basicInformations = computed(() => {
   return [
     {
       title: '生年月日',
-      value: basicInformationQuery.value?.basicInformation.birthday
+      value: basicInformationQuery.result.value?.basicInformation.birthday
     }
   ]
 })
@@ -18,12 +18,18 @@ const basicInformations = computed(() => {
       <v-list-subheader>
         基本情報
       </v-list-subheader>
-      <v-list-item
+      <v-skeleton-loader
         v-for="basicInformation in basicInformations"
         :key="basicInformation.title"
-        :title="basicInformation.title"
-        :subtitle="basicInformation.value"
-      />
+        :loading="basicInformationQuery.loading.value"
+        type="list-item-two-line"
+      >
+        <v-list-item
+          v-skeleton-loader
+          :title="basicInformation.title"
+          :subtitle="basicInformation.value"
+        />
+      </v-skeleton-loader>
     </v-list>
   </v-card>
 </template>
