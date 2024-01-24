@@ -10,7 +10,6 @@
     "preview": "nuxt preview",
     "postinstall": "pnpm codegen && nuxt prepare",
     "lint": "eslint .",
-    "tsc": "tsc",
     "codegen": "graphql-codegen --config codegen.ts",
     "e2e": "playwright test",
     "test": "vitest"
