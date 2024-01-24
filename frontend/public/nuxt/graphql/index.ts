@@ -22,7 +22,13 @@ export type Scalars = {
 export type BasicInformation = {
   __typename?: 'BasicInformation';
   birthday: Scalars['Date']['output'];
+  gender: Gender;
 };
+
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE'
+}
 
 export type Query = {
   __typename?: 'Query';
@@ -32,13 +38,14 @@ export type Query = {
 export type BasicInformationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { __typename?: 'BasicInformation', birthday: any } };
+export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { __typename?: 'BasicInformation', birthday: any, gender: Gender } };
 
 
 export const BasicInformationDocument = gql`
     query basicInformation {
   basicInformation {
     birthday
+    gender
   }
 }
     `;

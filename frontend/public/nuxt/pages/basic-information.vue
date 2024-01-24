@@ -2,11 +2,16 @@
 import { useBasicInformationQuery } from '~/graphql'
 
 const basicInformationQuery = useBasicInformationQuery()
+const basicInformationQueryResult = basicInformationQuery.result.value
 const basicInformations = computed(() => {
   return [
     {
       title: '生年月日',
-      value: basicInformationQuery.result.value?.basicInformation.birthday
+      value: basicInformationQueryResult?.basicInformation.birthday
+    },
+    {
+      title: '性別',
+      value: (basicInformationQueryResult === undefined) ? undefined : convertGenderForDisplay(basicInformationQueryResult.basicInformation.gender)
     }
   ]
 })
