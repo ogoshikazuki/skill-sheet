@@ -11,14 +11,25 @@ import (
 func TestBasicInformationRepositoryFind(t *testing.T) {
 	tests := map[string]struct {
 		sqlHandler repository.SqlHandler
+		gender     string
 		expect     entity.BasicInformation
 		returnsErr bool
 	}{
-		"Success": {
+		"SuccessMale": {
 			sqlHandler: sqlHandler,
+			gender:     "MALE",
 			expect: entity.BasicInformation{
 				Birthday: "1991-07-01",
 				Gender:   entity.Male,
+			},
+			returnsErr: false,
+		},
+		"SuccessFemale": {
+			sqlHandler: sqlHandler,
+			gender:     "FEMALE",
+			expect: entity.BasicInformation{
+				Birthday: "1991-07-01",
+				Gender:   entity.Female,
 			},
 			returnsErr: false,
 		},
@@ -27,11 +38,20 @@ func TestBasicInformationRepositoryFind(t *testing.T) {
 			expect:     entity.BasicInformation{},
 			returnsErr: true,
 		},
+		"InvalidGender": {
+			sqlHandler: sqlHandler,
+			gender:     "INVALID",
+			expect:     entity.BasicInformation{},
+			returnsErr: true,
+		},
 	}
 	for name, tt := range tests {
+		ctx := context.Background()
+		if _, err := sqlHandler.ExecContext(ctx, `UPDATE "basic_information" SET "gender" = $1`, tt.gender); err != nil {
+			panic(err)
+		}
 		t.Run(name, func(t *testing.T) {
 			repository := repository.NewBasicInformationRepository(tt.sqlHandler)
-			ctx := context.Background()
 
 			basicInformation, err := repository.Find(ctx)
 			if tt.expect != basicInformation {
