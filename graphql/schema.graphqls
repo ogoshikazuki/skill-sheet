@@ -8,8 +8,8 @@ type BasicInformation {
 }
 
 enum Gender {
-  MALE
   FEMALE
+  MALE
 }
 
 scalar Date
