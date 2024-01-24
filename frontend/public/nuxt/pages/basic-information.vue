@@ -2,16 +2,20 @@
 import { useBasicInformationQuery } from '~/graphql'
 
 const basicInformationQuery = useBasicInformationQuery()
-const basicInformationQueryResult = basicInformationQuery.result.value
+const basicInformationQueryResult = basicInformationQuery.result
 const basicInformations = computed(() => {
   return [
     {
       title: '生年月日',
-      value: basicInformationQueryResult?.basicInformation.birthday
+      value: basicInformationQueryResult.value?.basicInformation.birthday
     },
     {
       title: '性別',
-      value: (basicInformationQueryResult === undefined) ? undefined : convertGenderForDisplay(basicInformationQueryResult.basicInformation.gender)
+      value: (basicInformationQueryResult.value === undefined) ? undefined : convertGenderForDisplay(basicInformationQueryResult.value.basicInformation.gender)
+    },
+    {
+      title: '最終学歴',
+      value: basicInformationQueryResult.value?.basicInformation.academicBackground
     }
   ]
 })
@@ -30,7 +34,6 @@ const basicInformations = computed(() => {
         type="list-item-two-line"
       >
         <v-list-item
-          v-skeleton-loader
           :title="basicInformation.title"
           :subtitle="basicInformation.value"
         />

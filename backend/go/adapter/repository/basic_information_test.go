@@ -9,6 +9,8 @@ import (
 )
 
 func TestBasicInformationRepositoryFind(t *testing.T) {
+	academicBackground := "上智大学卒業"
+
 	tests := map[string]struct {
 		sqlHandler repository.SqlHandler
 		gender     string
@@ -19,8 +21,9 @@ func TestBasicInformationRepositoryFind(t *testing.T) {
 			sqlHandler: sqlHandler,
 			gender:     "MALE",
 			expect: entity.BasicInformation{
-				Birthday: "1991-07-01",
-				Gender:   entity.Male,
+				Birthday:           "1991-07-01",
+				Gender:             entity.Male,
+				AcademicBackground: academicBackground,
 			},
 			returnsErr: false,
 		},
@@ -28,8 +31,9 @@ func TestBasicInformationRepositoryFind(t *testing.T) {
 			sqlHandler: sqlHandler,
 			gender:     "FEMALE",
 			expect: entity.BasicInformation{
-				Birthday: "1991-07-01",
-				Gender:   entity.Female,
+				Birthday:           "1991-07-01",
+				Gender:             entity.Female,
+				AcademicBackground: academicBackground,
 			},
 			returnsErr: false,
 		},

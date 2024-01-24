@@ -48,8 +48,9 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	BasicInformation struct {
-		Birthday func(childComplexity int) int
-		Gender   func(childComplexity int) int
+		AcademicBackground func(childComplexity int) int
+		Birthday           func(childComplexity int) int
+		Gender             func(childComplexity int) int
 	}
 
 	Query struct {
@@ -79,6 +80,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "BasicInformation.academicBackground":
+		if e.complexity.BasicInformation.AcademicBackground == nil {
+			break
+		}
+
+		return e.complexity.BasicInformation.AcademicBackground(childComplexity), true
 
 	case "BasicInformation.birthday":
 		if e.complexity.BasicInformation.Birthday == nil {
@@ -197,11 +205,12 @@ var sources = []*ast.Source{
 type BasicInformation {
   birthday: Date!
   gender: Gender!
+  academicBackground: String!
 }
 
 enum Gender {
-  MALE
   FEMALE
+  MALE
 }
 
 scalar Date
@@ -354,6 +363,50 @@ func (ec *executionContext) fieldContext_BasicInformation_gender(ctx context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) _BasicInformation_academicBackground(ctx context.Context, field graphql.CollectedField, obj *model.BasicInformation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_BasicInformation_academicBackground(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AcademicBackground, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_BasicInformation_academicBackground(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "BasicInformation",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_basicInformation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_basicInformation(ctx, field)
 	if err != nil {
@@ -397,6 +450,8 @@ func (ec *executionContext) fieldContext_Query_basicInformation(ctx context.Cont
 				return ec.fieldContext_BasicInformation_birthday(ctx, field)
 			case "gender":
 				return ec.fieldContext_BasicInformation_gender(ctx, field)
+			case "academicBackground":
+				return ec.fieldContext_BasicInformation_academicBackground(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type BasicInformation", field.Name)
 		},
@@ -2332,6 +2387,11 @@ func (ec *executionContext) _BasicInformation(ctx context.Context, sel ast.Selec
 			}
 		case "gender":
 			out.Values[i] = ec._BasicInformation_gender(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "academicBackground":
+			out.Values[i] = ec._BasicInformation_academicBackground(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

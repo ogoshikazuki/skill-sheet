@@ -6,7 +6,15 @@ const config: CodegenConfig = {
   ignoreNoDocuments: true,
   generates: {
     './graphql/index.ts': {
-      plugins: ['typescript', 'typescript-operations', 'typescript-vue-apollo']
+      plugins: ['typescript', 'typescript-operations', 'typescript-vue-apollo'],
+      config: {
+        scalars: {
+          Date: {
+            input: 'string',
+            output: 'string'
+          }
+        }
+      }
     }
   }
 }

@@ -5,8 +5,9 @@ package entity
 import "context"
 
 type BasicInformation struct {
-	Birthday Date
-	Gender   Gender
+	Birthday           Date
+	Gender             Gender
+	AcademicBackground string
 }
 
 type BasicInformationRepository interface {

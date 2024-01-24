@@ -27,8 +27,9 @@ func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInfor
 		gender = model.GenderFemale
 	}
 	return &model.BasicInformation{
-		Birthday: output.BasicInformation.Birthday,
-		Gender:   gender,
+		Birthday:           output.BasicInformation.Birthday,
+		Gender:             gender,
+		AcademicBackground: output.BasicInformation.AcademicBackground,
 	}, nil
 }
 

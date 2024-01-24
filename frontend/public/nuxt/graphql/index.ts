@@ -16,11 +16,12 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  Date: { input: any; output: any; }
+  Date: { input: string; output: string; }
 };
 
 export type BasicInformation = {
   __typename?: 'BasicInformation';
+  academicBackground: Scalars['String']['output'];
   birthday: Scalars['Date']['output'];
   gender: Gender;
 };
@@ -38,7 +39,7 @@ export type Query = {
 export type BasicInformationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { __typename?: 'BasicInformation', birthday: any, gender: Gender } };
+export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { __typename?: 'BasicInformation', birthday: string, gender: Gender, academicBackground: string } };
 
 
 export const BasicInformationDocument = gql`
@@ -46,6 +47,7 @@ export const BasicInformationDocument = gql`
   basicInformation {
     birthday
     gender
+    academicBackground
   }
 }
     `;

@@ -11,9 +11,11 @@ import (
 
 func TestFindBasicInformationUsecase(t *testing.T) {
 	birthday := entity.Date("1991-07-01")
+	academicBackground := "上智大学卒業"
 	basicInformation := entity.BasicInformation{
-		Birthday: birthday,
-		Gender:   entity.Male,
+		Birthday:           birthday,
+		Gender:             entity.Male,
+		AcademicBackground: academicBackground,
 	}
 	testErr := errors.New("test")
 
@@ -28,8 +30,9 @@ func TestFindBasicInformationUsecase(t *testing.T) {
 			},
 			expectedOutput: usecase.FindBasicInformationOutput{
 				BasicInformation: entity.BasicInformation{
-					Birthday: birthday,
-					Gender:   entity.Male,
+					Birthday:           birthday,
+					Gender:             entity.Male,
+					AcademicBackground: academicBackground,
 				},
 			},
 			expectedErr: nil,

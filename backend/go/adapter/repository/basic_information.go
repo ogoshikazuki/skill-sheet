@@ -14,7 +14,7 @@ type basicInformationRepository struct {
 
 func (repository basicInformationRepository) Find(ctx context.Context) (entity.BasicInformation, error) {
 	rows, err := repository.sqlHandler.QueryContext(ctx, `
-SELECT "birthday", "gender"
+SELECT "birthday", "gender", "academic_background"
 FROM "basic_information"
 LIMIT 1
 `)
@@ -27,7 +27,8 @@ LIMIT 1
 
 	var birthday time.Time
 	var gender string
-	if err := rows.Scan(&birthday, &gender); err != nil {
+	var academicBackground string
+	if err := rows.Scan(&birthday, &gender, &academicBackground); err != nil {
 		return entity.BasicInformation{}, err
 	}
 
@@ -37,8 +38,9 @@ LIMIT 1
 	}
 
 	return entity.BasicInformation{
-		Birthday: entity.NewDateFromTime(birthday),
-		Gender:   entityGender,
+		Birthday:           entity.NewDateFromTime(birthday),
+		Gender:             entityGender,
+		AcademicBackground: academicBackground,
 	}, nil
 }
 

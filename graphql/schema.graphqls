@@ -5,6 +5,7 @@ type Query {
 type BasicInformation {
   birthday: Date!
   gender: Gender!
+  academicBackground: String!
 }
 
 enum Gender {

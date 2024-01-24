@@ -11,8 +11,9 @@ import (
 )
 
 type BasicInformation struct {
-	Birthday entity.Date `json:"birthday"`
-	Gender   Gender      `json:"gender"`
+	Birthday           entity.Date `json:"birthday"`
+	Gender             Gender      `json:"gender"`
+	AcademicBackground string      `json:"academicBackground"`
 }
 
 type Query struct {
@@ -21,18 +22,18 @@ type Query struct {
 type Gender string
 
 const (
-	GenderMale   Gender = "MALE"
 	GenderFemale Gender = "FEMALE"
+	GenderMale   Gender = "MALE"
 )
 
 var AllGender = []Gender{
-	GenderMale,
 	GenderFemale,
+	GenderMale,
 }
 
 func (e Gender) IsValid() bool {
 	switch e {
-	case GenderMale, GenderFemale:
+	case GenderFemale, GenderMale:
 		return true
 	}
 	return false
