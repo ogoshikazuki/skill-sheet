@@ -1,6 +1,6 @@
 import { Gender } from '../graphql'
 
-export const convertGenderForDisplay = (gender: Gender) => {
+const func = (gender: Gender) => {
   switch (gender) {
     case Gender.Male:
       return '男性'
@@ -8,3 +8,4 @@ export const convertGenderForDisplay = (gender: Gender) => {
       return '女性'
   }
 }
+export default func

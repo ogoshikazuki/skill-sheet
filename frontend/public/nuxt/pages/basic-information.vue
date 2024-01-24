@@ -1,13 +1,22 @@
 <script lang="ts" setup>
+import { Temporal } from 'temporal-polyfill'
 import { useBasicInformationQuery } from '~/graphql'
 
 const basicInformationQuery = useBasicInformationQuery()
 const basicInformationQueryResult = basicInformationQuery.result
 const basicInformations = computed(() => {
+  const age = (() => {
+    if (basicInformationQueryResult.value === undefined) {
+      return ''
+    }
+    const birthday = Temporal.PlainDate.from(basicInformationQueryResult.value.basicInformation.birthday)
+    const age = calculateAge(birthday, Temporal.Now.plainDateISO())
+    return `(${age}歳)`
+  })()
   return [
     {
       title: '生年月日',
-      value: basicInformationQueryResult.value?.basicInformation.birthday
+      value: `${basicInformationQueryResult.value?.basicInformation.birthday}${age}`
     },
     {
       title: '性別',
