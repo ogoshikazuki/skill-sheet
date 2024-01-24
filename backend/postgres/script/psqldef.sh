@@ -1,13 +1,9 @@
-PRODUCTION_HOST=
-PRODUCTION_PORT=
-PRODUCTION_USER=
-PRODUCTION_PASSWORD=
-PRODUCTION_DATABASE=
-
 if !(type psqldef > /dev/null 2>&1); then
     echo "psqldef が存在しません。 https://github.com/sqldef/sqldef?tab=readme-ov-file#installation"
     exit 1
 fi
+
+source .env
 
 case $1 in
     production)
@@ -18,7 +14,7 @@ esac
 
 echo ENV=${ENV}
 
-FILE=./schema.sql
+FILE=./init/1.schema.sql
 
 case $ENV in
     local)
