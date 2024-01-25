@@ -1,0 +1,15 @@
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - backend/postgres/init/1.schema.sql
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh pr comment ${{ github.event.pull_request.html_url }} --body "DBスキーマが変更されているので、Merge前にDBスキーマの更新を行ってください。"
