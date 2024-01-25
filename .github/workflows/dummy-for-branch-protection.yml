@@ -1,0 +1,16 @@
+on:
+  pull_request:
+    paths-ignore:
+      - backend/go/**
+      - frontend/public/nuxt/**
+      - graphql/**
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "dummy lint for branch protection"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "dummy test for branch protection"
