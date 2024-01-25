@@ -28,10 +28,16 @@ func NewServer(cfg config.Config, logger *log.Logger) Server {
 }
 
 func (s Server) Start() {
+	s.handleHealth()
 	s.handleGraphQL()
-	s.handleGraphQLPlayground()
 
 	s.listen()
+}
+
+func (s Server) handleHealth() {
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
 }
 
 func (s Server) handleGraphQL() {
@@ -45,9 +51,7 @@ func (s Server) handleGraphQL() {
 		return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
 	})
 	http.Handle("/query", c.Handler(srv))
-}
 
-func (s Server) handleGraphQLPlayground() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 }
 
