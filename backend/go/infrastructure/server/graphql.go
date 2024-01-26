@@ -11,7 +11,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/ogoshikazuki/skill-sheet/config"
 	"github.com/ogoshikazuki/skill-sheet/graph"
-	"github.com/rs/cors"
+	"github.com/ogoshikazuki/skill-sheet/infrastructure/server/middleware"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
@@ -41,21 +41,19 @@ func (s Server) handleHealth() {
 }
 
 func (s Server) handleGraphQL() {
-	c := cors.New(cors.Options{
-		AllowedOrigins:   s.cfg.CorsAllowdOrigins,
-		AllowCredentials: true,
-	})
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		s.logger.Printf("%+v", errors.Unwrap(err))
 		return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
 	})
-	http.Handle("/query", c.Handler(srv))
+	http.Handle("/query", srv)
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 }
 
 func (s Server) listen() {
+	handler := middleware.Cors(middleware.WithCorsAllowedOrigins(s.cfg.CorsAllowdOrigins))(http.DefaultServeMux)
+
 	s.logger.Printf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
-	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, nil))
+	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, handler))
 }
