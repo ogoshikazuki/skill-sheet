@@ -8,12 +8,25 @@ import (
 	"strconv"
 
 	"github.com/ogoshikazuki/skill-sheet/entity"
+	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
 )
 
 type BasicInformation struct {
+	AcademicBackground string      `json:"academicBackground"`
 	Birthday           entity.Date `json:"birthday"`
 	Gender             Gender      `json:"gender"`
-	AcademicBackground string      `json:"academicBackground"`
+}
+
+type Project struct {
+	ID         scalar.ID        `json:"id"`
+	Name       string           `json:"name"`
+	StartMonth entity.YearMonth `json:"startMonth"`
+	EndMonth   entity.YearMonth `json:"endMonth,omitempty"`
+}
+
+type ProjectOrder struct {
+	Field     ProjectOrderField `json:"field"`
+	Direction OrderDirection    `json:"direction"`
 }
 
 type Query struct {
@@ -57,5 +70,87 @@ func (e *Gender) UnmarshalGQL(v interface{}) error {
 }
 
 func (e Gender) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type OrderDirection string
+
+const (
+	OrderDirectionAsc  OrderDirection = "ASC"
+	OrderDirectionDesc OrderDirection = "DESC"
+)
+
+var AllOrderDirection = []OrderDirection{
+	OrderDirectionAsc,
+	OrderDirectionDesc,
+}
+
+func (e OrderDirection) IsValid() bool {
+	switch e {
+	case OrderDirectionAsc, OrderDirectionDesc:
+		return true
+	}
+	return false
+}
+
+func (e OrderDirection) String() string {
+	return string(e)
+}
+
+func (e *OrderDirection) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = OrderDirection(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid OrderDirection", str)
+	}
+	return nil
+}
+
+func (e OrderDirection) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type ProjectOrderField string
+
+const (
+	ProjectOrderFieldStartMonth ProjectOrderField = "START_MONTH"
+	ProjectOrderFieldEndMonth   ProjectOrderField = "END_MONTH"
+)
+
+var AllProjectOrderField = []ProjectOrderField{
+	ProjectOrderFieldStartMonth,
+	ProjectOrderFieldEndMonth,
+}
+
+func (e ProjectOrderField) IsValid() bool {
+	switch e {
+	case ProjectOrderFieldStartMonth, ProjectOrderFieldEndMonth:
+		return true
+	}
+	return false
+}
+
+func (e ProjectOrderField) String() string {
+	return string(e)
+}
+
+func (e *ProjectOrderField) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = ProjectOrderField(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid ProjectOrderField", str)
+	}
+	return nil
+}
+
+func (e ProjectOrderField) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

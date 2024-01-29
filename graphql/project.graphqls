@@ -1,0 +1,29 @@
+extend type Query {
+  projects(orderBy: [ProjectOrder!]! = [
+    {
+      field: START_MONTH
+      direction: DESC
+    }
+    {
+      field: END_MONTH
+      direction: DESC
+    }
+  ]): [Project!]!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  startMonth: YearMonth!
+  endMonth: YearMonth
+}
+
+input ProjectOrder {
+  field: ProjectOrderField!
+  direction: OrderDirection!
+}
+
+enum ProjectOrderField {
+  START_MONTH
+  END_MONTH
+}

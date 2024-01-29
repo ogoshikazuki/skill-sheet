@@ -13,4 +13,10 @@ enum Gender {
   MALE
 }
 
+enum OrderDirection {
+  ASC
+  DESC
+}
+
 scalar Date
+scalar YearMonth
