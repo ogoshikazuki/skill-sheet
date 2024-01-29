@@ -22,7 +22,7 @@
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-codegen/typescript-vue-apollo": "^4.1.0",
     "@mdi/font": "^7.4.47",
-    "@nuxt/test-utils": "^3.10.0",
+    "@nuxt/test-utils": "^3.11.0",
     "@nuxtjs/apollo": "5.0.0-alpha.11",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@parcel/watcher": "^2.4.0",
