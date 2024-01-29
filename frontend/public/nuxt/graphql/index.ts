@@ -17,6 +17,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   Date: { input: string; output: string; }
+  YearMonth: { input: any; output: any; }
 };
 
 export type BasicInformation = {
@@ -31,9 +32,38 @@ export enum Gender {
   Male = 'MALE'
 }
 
+export enum OrderDirection {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
+export type Project = {
+  __typename?: 'Project';
+  endMonth?: Maybe<Scalars['YearMonth']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  startMonth: Scalars['YearMonth']['output'];
+};
+
+export type ProjectOrder = {
+  direction: OrderDirection;
+  field: ProjectOrderField;
+};
+
+export enum ProjectOrderField {
+  EndMonth = 'END_MONTH',
+  StartMonth = 'START_MONTH'
+}
+
 export type Query = {
   __typename?: 'Query';
   basicInformation: BasicInformation;
+  projects: Array<Project>;
+};
+
+
+export type QueryProjectsArgs = {
+  orderBy?: Array<ProjectOrder>;
 };
 
 export type BasicInformationQueryVariables = Exact<{ [key: string]: never; }>;
@@ -41,9 +71,14 @@ export type BasicInformationQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { __typename?: 'BasicInformation', birthday: string, gender: Gender, academicBackground: string } };
 
+export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, name: string, startMonth: any, endMonth?: any | null }> };
+
 
 export const BasicInformationDocument = gql`
-    query basicInformation {
+    query BasicInformation {
   basicInformation {
     birthday
     gender
@@ -71,3 +106,33 @@ export function useBasicInformationLazyQuery(options: VueApolloComposable.UseQue
   return VueApolloComposable.useLazyQuery<BasicInformationQuery, BasicInformationQueryVariables>(BasicInformationDocument, {}, options);
 }
 export type BasicInformationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<BasicInformationQuery, BasicInformationQueryVariables>;
+export const ProjectsDocument = gql`
+    query Projects {
+  projects {
+    id
+    name
+    startMonth
+    endMonth
+  }
+}
+    `;
+
+/**
+ * __useProjectsQuery__
+ *
+ * To run a query within a Vue component, call `useProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useProjectsQuery();
+ */
+export function useProjectsQuery(options: VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {}, options);
+}
+export function useProjectsLazyQuery(options: VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ProjectsQuery, ProjectsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {}, options);
+}
+export type ProjectsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ProjectsQuery, ProjectsQueryVariables>;

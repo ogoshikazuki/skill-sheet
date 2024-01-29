@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar>
+    <v-app-bar color="grey-darken-3">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>
         KOシステム
@@ -8,7 +8,7 @@
       <v-btn icon="mdi-github" href="https://github.com/ogoshikazuki/skill-sheet" target="_blank" />
       <v-btn icon="mdi-home" @click="navigateToHome" />
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" width="288">
+    <v-navigation-drawer v-model="drawer" width="288" color="grey-darken-2">
       <v-list>
         <v-list-item>
           <a class="twitter-timeline" href="https://twitter.com/k_o_system?ref_src=twsrc%5Etfw">Tweets by
