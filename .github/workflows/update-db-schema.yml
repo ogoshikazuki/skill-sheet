@@ -13,3 +13,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: gh pr comment ${{ github.event.pull_request.html_url }} --body "DBスキーマが変更されているので、Merge前にDBスキーマの更新を行ってください。"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
