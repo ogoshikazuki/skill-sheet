@@ -1,4 +1,4 @@
-query basicInformation {
+query BasicInformation {
   basicInformation {
     birthday
     gender

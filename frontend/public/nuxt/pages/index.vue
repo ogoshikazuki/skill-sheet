@@ -3,6 +3,10 @@ const pages = [
   {
     path: 'basic-information',
     label: '基本情報'
+  },
+  {
+    path: 'project',
+    label: 'プロジェクト経歴'
   }
 ]
 </script>

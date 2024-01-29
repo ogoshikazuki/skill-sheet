@@ -1,0 +1,2 @@
+schema: graphql/*.graphqls
+documents: frontend/public/nuxt/graphql/*.graphql
