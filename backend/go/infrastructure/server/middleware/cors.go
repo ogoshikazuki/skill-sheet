@@ -10,15 +10,15 @@ type corsOptions struct {
 	allowedOrigins []string
 }
 
-type CorsOption func(*corsOptions)
+type CORSOption func(*corsOptions)
 
-func WithCorsAllowedOrigins(allowedOrigins []string) CorsOption {
+func WithCORSAllowedOrigins(allowedOrigins []string) CORSOption {
 	return func(opts *corsOptions) {
 		opts.allowedOrigins = allowedOrigins
 	}
 }
 
-func Cors(opts ...CorsOption) func(http.Handler) http.Handler {
+func CORS(opts ...CORSOption) func(http.Handler) http.Handler {
 	options := corsOptions{}
 	for _, opt := range opts {
 		opt(&options)

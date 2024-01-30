@@ -52,7 +52,7 @@ func (s Server) handleGraphQL() {
 }
 
 func (s Server) listen() {
-	handler := middleware.Cors(middleware.WithCorsAllowedOrigins(s.cfg.CorsAllowdOrigins))(http.DefaultServeMux)
+	handler := middleware.CORS(middleware.WithCORSAllowedOrigins(s.cfg.CORSAllowedOrigins))(http.DefaultServeMux)
 
 	s.logger.Printf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
 	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, handler))

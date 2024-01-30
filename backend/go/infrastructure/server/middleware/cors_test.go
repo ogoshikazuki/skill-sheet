@@ -10,7 +10,7 @@ import (
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/server/middleware"
 )
 
-func TestCors(t *testing.T) {
+func TestCORS(t *testing.T) {
 	// CORS関連のヘッダ、繰り返し使うので定数化
 	const (
 		headerAccessControlAllowCredentials = "Access-Control-Allow-Credentials"
@@ -69,7 +69,7 @@ func TestCors(t *testing.T) {
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			corsMiddleware := middleware.Cors(middleware.WithCorsAllowedOrigins(tt.allowedOrigins))
+			corsMiddleware := middleware.CORS(middleware.WithCORSAllowedOrigins(tt.allowedOrigins))
 			handler := corsMiddleware(handler)
 
 			// プリフライトリクエスト
