@@ -2,7 +2,7 @@
 import { Temporal } from 'temporal-polyfill'
 import { useProjectsQuery } from '~/graphql'
 
-const { result } = useProjectsQuery()
+const { result, loading } = useProjectsQuery()
 
 const convertYearMonthForDisplay = (yearMonth: string) => {
   const plainYearMonth = Temporal.PlainYearMonth.from(yearMonth)
@@ -12,7 +12,19 @@ const convertYearMonthForDisplay = (yearMonth: string) => {
 
 <template>
   <div>
-    <v-card v-for="(project, i) in result?.projects" :key="project.id" :class="{ 'mt-2': i > 0 }">
+    <template v-if="loading">
+      <v-card v-for="(project, i) in Array(3)" :key="i" :class="{ 'mt-2': i > 0 }">
+        <v-card-item>
+          <v-card-title>
+            <v-skeleton-loader type="heading" />
+          </v-card-title>
+        </v-card-item>
+        <v-card-text>
+          <v-skeleton-loader type="text" />
+        </v-card-text>
+      </v-card>
+    </template>
+    <v-card v-for="(project, i) in result?.projects" v-else :key="project.id" :class="{ 'mt-2': i > 0 }">
       <v-card-item>
         <v-card-title :title="project.name" style="white-space: normal;">
           {{ project.name }}
