@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Temporal } from 'temporal-polyfill'
+import { projects } from '~/breadcrumbs'
 import { useProjectsQuery } from '~/graphql'
+
+definePageMeta({
+  breadcrumbs: projects()
+})
 
 const { result, loading } = useProjectsQuery()
 

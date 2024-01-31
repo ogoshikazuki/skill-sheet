@@ -17,6 +17,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-main>
+      <Breadcrumbs />
       <NuxtPage class="ma-4" />
     </v-main>
   </v-app>

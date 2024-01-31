@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { Temporal } from 'temporal-polyfill'
+import { basicInformation } from '~/breadcrumbs'
 import { useBasicInformationQuery } from '~/graphql'
+
+definePageMeta({
+  breadcrumbs: basicInformation()
+})
 
 const basicInformationQuery = useBasicInformationQuery()
 const basicInformationQueryResult = basicInformationQuery.result
