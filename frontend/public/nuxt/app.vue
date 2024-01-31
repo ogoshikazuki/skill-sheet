@@ -5,7 +5,6 @@
         KOシステム
       </v-app-bar-title>
       <v-btn icon="mdi-github" href="https://github.com/ogoshikazuki/skill-sheet" target="_blank" />
-      <v-btn icon="mdi-home" @click="navigateToHome" />
     </v-app-bar>
     <v-main>
       <Breadcrumbs />
@@ -13,9 +12,3 @@
     </v-main>
   </v-app>
 </template>
-
-<script setup lang="ts">
-const navigateToHome = () => {
-  navigateTo('/')
-}
-</script>
