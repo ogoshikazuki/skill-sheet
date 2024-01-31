@@ -26,5 +26,8 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['@typescript-eslint', 'vue'],
-  ignorePatterns: ['graphql/index.ts']
+  ignorePatterns: ['graphql/index.ts'],
+  rules: {
+    'vue/multi-word-component-names': 0
+  }
 }

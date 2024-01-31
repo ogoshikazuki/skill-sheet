@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { home } from '~/breadcrumbs'
+
+definePageMeta({
+  breadcrumbs: home()
+})
+
 const pages = [
   {
     path: 'basic-information',
