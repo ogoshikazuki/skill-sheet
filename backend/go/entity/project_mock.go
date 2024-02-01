@@ -18,6 +18,9 @@ var _ ProjectRepository = &ProjectRepositoryMock{}
 //
 //		// make and configure a mocked ProjectRepository
 //		mockedProjectRepository := &ProjectRepositoryMock{
+//			FindFunc: func(contextMoqParam context.Context, iD ID) (Project, error) {
+//				panic("mock out the Find method")
+//			},
 //			SearchFunc: func(contextMoqParam context.Context, projectOrders []ProjectOrder) ([]Project, error) {
 //				panic("mock out the Search method")
 //			},
@@ -28,11 +31,21 @@ var _ ProjectRepository = &ProjectRepositoryMock{}
 //
 //	}
 type ProjectRepositoryMock struct {
+	// FindFunc mocks the Find method.
+	FindFunc func(contextMoqParam context.Context, iD ID) (Project, error)
+
 	// SearchFunc mocks the Search method.
 	SearchFunc func(contextMoqParam context.Context, projectOrders []ProjectOrder) ([]Project, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
+		// Find holds details about calls to the Find method.
+		Find []struct {
+			// ContextMoqParam is the contextMoqParam argument value.
+			ContextMoqParam context.Context
+			// ID is the iD argument value.
+			ID ID
+		}
 		// Search holds details about calls to the Search method.
 		Search []struct {
 			// ContextMoqParam is the contextMoqParam argument value.
@@ -41,7 +54,44 @@ type ProjectRepositoryMock struct {
 			ProjectOrders []ProjectOrder
 		}
 	}
+	lockFind   sync.RWMutex
 	lockSearch sync.RWMutex
+}
+
+// Find calls FindFunc.
+func (mock *ProjectRepositoryMock) Find(contextMoqParam context.Context, iD ID) (Project, error) {
+	if mock.FindFunc == nil {
+		panic("ProjectRepositoryMock.FindFunc: method is nil but ProjectRepository.Find was just called")
+	}
+	callInfo := struct {
+		ContextMoqParam context.Context
+		ID              ID
+	}{
+		ContextMoqParam: contextMoqParam,
+		ID:              iD,
+	}
+	mock.lockFind.Lock()
+	mock.calls.Find = append(mock.calls.Find, callInfo)
+	mock.lockFind.Unlock()
+	return mock.FindFunc(contextMoqParam, iD)
+}
+
+// FindCalls gets all the calls that were made to Find.
+// Check the length with:
+//
+//	len(mockedProjectRepository.FindCalls())
+func (mock *ProjectRepositoryMock) FindCalls() []struct {
+	ContextMoqParam context.Context
+	ID              ID
+} {
+	var calls []struct {
+		ContextMoqParam context.Context
+		ID              ID
+	}
+	mock.lockFind.RLock()
+	calls = mock.calls.Find
+	mock.lockFind.RUnlock()
+	return calls
 }
 
 // Search calls SearchFunc.

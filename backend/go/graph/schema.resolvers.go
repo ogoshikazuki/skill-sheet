@@ -10,6 +10,8 @@ import (
 	"github.com/ogoshikazuki/skill-sheet/di"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
+	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
+	"github.com/ogoshikazuki/skill-sheet/usecase"
 )
 
 // BasicInformation is the resolver for the basicInformation field.
@@ -27,10 +29,35 @@ func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInfor
 		gender = model.GenderFemale
 	}
 	return &model.BasicInformation{
+		ID:                 scalar.NewID("BasicInformation", 0),
 		Birthday:           output.BasicInformation.Birthday,
 		Gender:             gender,
 		AcademicBackground: output.BasicInformation.AcademicBackground,
 	}, nil
+}
+
+// Node is the resolver for the node field.
+func (r *queryResolver) Node(ctx context.Context, id scalar.ID) (model.Node, error) {
+	typename := id.GetTypename()
+
+	switch typename {
+	case "Project":
+		output, err := di.Usecases.FindProjectUsecase.Handle(ctx, usecase.FindProjectInput{
+			ID: id.GetID(),
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return model.Project{
+			ID:         id,
+			Name:       output.Project.Name,
+			StartMonth: output.Project.StartMonth,
+			EndMonth:   output.Project.EndMonth,
+		}, nil
+	}
+
+	return nil, nil
 }
 
 // Query returns QueryResolver implementation.

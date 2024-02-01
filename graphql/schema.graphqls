@@ -1,8 +1,14 @@
 type Query {
   basicInformation: BasicInformation!
+  node(id: ID!): Node
+}
+
+interface Node {
+  id: ID!
 }
 
 type BasicInformation {
+  id: ID!
   academicBackground: String!
   birthday: Date!
   gender: Gender!
@@ -17,6 +23,3 @@ enum OrderDirection {
   ASC
   DESC
 }
-
-scalar Date
-scalar YearMonth

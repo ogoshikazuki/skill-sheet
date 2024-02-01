@@ -5,7 +5,7 @@ package entity
 import "context"
 
 type Project struct {
-	Id         uint
+	Id         ID
 	Name       string
 	StartMonth YearMonth
 	// EndMonth 現在進行形のプロジェクトの場合null相当となる
@@ -26,4 +26,5 @@ type ProjectOrder struct {
 
 type ProjectRepository interface {
 	Search(context.Context, []ProjectOrder) ([]Project, error)
+	Find(context.Context, ID) (Project, error)
 }

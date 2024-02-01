@@ -11,7 +11,13 @@ import (
 	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
 )
 
+type Node interface {
+	IsNode()
+	GetID() scalar.ID
+}
+
 type BasicInformation struct {
+	ID                 scalar.ID   `json:"id"`
 	AcademicBackground string      `json:"academicBackground"`
 	Birthday           entity.Date `json:"birthday"`
 	Gender             Gender      `json:"gender"`
@@ -23,6 +29,9 @@ type Project struct {
 	StartMonth entity.YearMonth `json:"startMonth"`
 	EndMonth   entity.YearMonth `json:"endMonth,omitempty"`
 }
+
+func (Project) IsNode()               {}
+func (this Project) GetID() scalar.ID { return this.ID }
 
 type ProjectOrder struct {
 	Field     ProjectOrderField `json:"field"`

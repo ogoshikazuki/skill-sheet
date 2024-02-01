@@ -6,20 +6,30 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/ogoshikazuki/skill-sheet/entity"
 )
 
 const ID_SEPARATOR = ":"
 
 type ID struct {
 	typename string
-	id       uint
+	id       entity.ID
 }
 
-func NewID(typename string, id uint) ID {
+func NewID(typename string, id entity.ID) ID {
 	return ID{
 		typename: typename,
 		id:       id,
 	}
+}
+
+func (i ID) GetTypename() string {
+	return i.typename
+}
+
+func (i ID) GetID() entity.ID {
+	return i.id
 }
 
 func (i *ID) UnmarshalGQL(v interface{}) error {
@@ -43,7 +53,7 @@ func (i *ID) UnmarshalGQL(v interface{}) error {
 	if err != nil {
 		return err
 	}
-	i.id = uint(id)
+	i.id = entity.ID(id)
 
 	return nil
 }
