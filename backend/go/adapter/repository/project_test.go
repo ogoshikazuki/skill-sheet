@@ -109,3 +109,56 @@ func TestProjectSearch(t *testing.T) {
 		})
 	}
 }
+
+func TestProjectFind(t *testing.T) {
+	t.Parallel()
+
+	yearMonth201704, _ := entity.NewYearMonth(2017, 4)
+	yearMonth201808, _ := entity.NewYearMonth(2018, 8)
+
+	tests := map[string]struct {
+		id                 entity.ID
+		sqlHandler         repository.SqlHandler
+		expectedProject    entity.Project
+		expectedReturnsErr bool
+	}{
+		"Normal": {
+			id:         1,
+			sqlHandler: sqlHandler,
+			expectedProject: entity.Project{
+				Id:         1,
+				Name:       "人材紹介会社向けクラウド型業務管理システムのリニューアル",
+				StartMonth: yearMonth201704,
+				EndMonth:   yearMonth201808,
+			},
+		},
+		"NotFound": {
+			id:         0,
+			sqlHandler: sqlHandler,
+		},
+		"SqlHandlerReturnsErr": {
+			id:                 1,
+			sqlHandler:         errSqlHandler,
+			expectedReturnsErr: true,
+		},
+	}
+
+	for name, tt := range tests {
+		tt := tt
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			ctx := context.Background()
+
+			repo := repository.NewProjectRepository(tt.sqlHandler)
+			project, err := repo.Find(ctx, tt.id)
+
+			if project != tt.expectedProject {
+				t.Errorf("project: %+v, expectedProject: %+v", project, tt.expectedProject)
+			}
+			if (err == nil) == tt.expectedReturnsErr {
+				t.Errorf("err: %+v, expectedReturnsErr: %t", err, tt.expectedReturnsErr)
+			}
+		})
+	}
+}

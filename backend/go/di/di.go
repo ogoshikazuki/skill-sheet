@@ -9,6 +9,7 @@ import (
 
 type usecases struct {
 	FindBasicInformationUsecase usecase.FindBasicInformationUsecase
+	FindProjectUsecase          usecase.FindProjectUsecase
 	SearchProjectsUsecase       usecase.SearchProjectsUsecase
 }
 
@@ -30,6 +31,7 @@ func Di(cfg config.Config) error {
 	projectRepository := repository.NewProjectRepository(sqlhandler)
 
 	Usecases.FindBasicInformationUsecase = usecase.NewFindBasicInformationUsecase(basicInformationRepository)
+	Usecases.FindProjectUsecase = usecase.NewFindProjectUsecase(projectRepository)
 	Usecases.SearchProjectsUsecase = usecase.NewSearchProjectsUsecase(projectRepository)
 
 	return nil

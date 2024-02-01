@@ -43,6 +43,11 @@ func (s Server) handleHealth() {
 func (s Server) handleGraphQL() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
+		var gqlError *gqlerror.Error
+		if errors.As(err, &gqlError) {
+			return gqlError
+		}
+
 		s.logger.Printf("%+v", errors.Unwrap(err))
 		return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
 	})

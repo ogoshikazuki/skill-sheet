@@ -11,7 +11,7 @@ extend type Query {
   ]): [Project!]!
 }
 
-type Project {
+type Project implements Node {
   id: ID!
   name: String!
   startMonth: YearMonth!

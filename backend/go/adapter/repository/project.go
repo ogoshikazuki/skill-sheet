@@ -52,7 +52,7 @@ FROM "projects"
 			}
 		}
 		projects = append(projects, entity.Project{
-			Id:         id,
+			Id:         entity.ID(id),
 			Name:       name,
 			StartMonth: startYearMonth,
 			EndMonth:   endYearMonth,
@@ -60,6 +60,49 @@ FROM "projects"
 	}
 
 	return projects, nil
+}
+
+func (r projectRepository) Find(ctx context.Context, id entity.ID) (entity.Project, error) {
+	query := `
+SELECT "name", "start_month", "end_month"
+FROM "projects"
+WHERE "id" = $1
+`
+	rows, err := r.sqlHandler.QueryContext(ctx, query, id)
+	if err != nil {
+		return entity.Project{}, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return entity.Project{}, nil
+	}
+
+	var name string
+	var startMonth time.Time
+	var endMonth sql.NullTime
+	if err := rows.Scan(&name, &startMonth, &endMonth); err != nil {
+		return entity.Project{}, err
+	}
+
+	startYearMonth, err := entity.NewYearMonth(startMonth.Year(), int(startMonth.Month()))
+	if err != nil {
+		return entity.Project{}, errors.WithStack(err)
+	}
+	var endYearMonth entity.YearMonth
+	if endMonth.Valid {
+		endYearMonth, err = entity.NewYearMonth(endMonth.Time.Year(), int(endMonth.Time.Month()))
+		if err != nil {
+			return entity.Project{}, errors.WithStack(err)
+		}
+	}
+
+	return entity.Project{
+		Id:         id,
+		Name:       name,
+		StartMonth: startYearMonth,
+		EndMonth:   endYearMonth,
+	}, nil
 }
 
 func (r projectRepository) addOrderBy(query string, projectOrders []entity.ProjectOrder) string {
