@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/cockroachdb/errors"
 	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
+	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/tanimutomo/sqlfile"
 
 	_ "github.com/lib/pq"
@@ -28,7 +28,7 @@ func (handler *sqlHandler) ExecContext(ctx context.Context, query string, args .
 func (handler *sqlHandler) QueryContext(ctx context.Context, query string, args ...any) (repository.Rows, error) {
 	r, err := handler.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, entity.ErrInternalAndLogStack(ctx, err)
 	}
 
 	return &rows{rows: r}, nil
@@ -42,12 +42,12 @@ func (s *sqlHandler) ExecContextFromFile(ctx context.Context, path string) ([]re
 	sf := sqlfile.New()
 
 	if err := sf.Directory(path); err != nil {
-		return nil, errors.WithStack(err)
+		return nil, entity.ErrInternalAndLogStack(ctx, err)
 	}
 
 	res, err := sf.Exec(s.db)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, entity.ErrInternalAndLogStack(ctx, err)
 	}
 
 	var results []repository.Result
@@ -83,11 +83,11 @@ type rows struct {
 	rows *sql.Rows
 }
 
-func (r *rows) Scan(dest ...any) error {
+func (r *rows) Scan(ctx context.Context, dest ...any) error {
 	err := r.rows.Scan(dest...)
 
 	if err != nil {
-		return errors.WithStack(err)
+		return entity.ErrInternalAndLogStack(ctx, err)
 	}
 
 	return nil

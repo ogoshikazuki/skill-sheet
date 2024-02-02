@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/cockroachdb/errors"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 )
 
@@ -18,6 +17,26 @@ func NewProjectRepository(sqlHandler SqlHandler) entity.ProjectRepository {
 }
 
 func (r projectRepository) Search(ctx context.Context, projectOrders []entity.ProjectOrder) ([]entity.Project, error) {
+	technologyIDsQuery := `
+SELECT "project_id", "technology_id"
+FROM project_technology
+`
+	technologyIDsRows, err := r.sqlHandler.QueryContext(ctx, technologyIDsQuery)
+	if err != nil {
+		return nil, err
+	}
+	defer technologyIDsRows.Close()
+
+	technologyIDs := map[entity.ID]([]entity.ID){}
+	for technologyIDsRows.Next() {
+		var projectID, technologyID entity.ID
+		if err := technologyIDsRows.Scan(ctx, &projectID, &technologyID); err != nil {
+			return nil, err
+		}
+
+		technologyIDs[projectID] = append(technologyIDs[projectID], technologyID)
+	}
+
 	query := `
 SELECT "id", "name", "start_month", "end_month"
 FROM "projects"
@@ -32,30 +51,31 @@ FROM "projects"
 
 	projects := []entity.Project{}
 	for rows.Next() {
-		var id uint
+		var id entity.ID
 		var name string
 		var startMonth time.Time
 		var endMonth sql.NullTime
-		if err := rows.Scan(&id, &name, &startMonth, &endMonth); err != nil {
+		if err := rows.Scan(ctx, &id, &name, &startMonth, &endMonth); err != nil {
 			return []entity.Project{}, err
 		}
 
 		startYearMonth, err := entity.NewYearMonth(startMonth.Year(), int(startMonth.Month()))
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, entity.ErrInternalAndLogStack(ctx, err)
 		}
 		var endYearMonth entity.YearMonth
 		if endMonth.Valid {
 			endYearMonth, err = entity.NewYearMonth(endMonth.Time.Year(), int(endMonth.Time.Month()))
 			if err != nil {
-				return nil, errors.WithStack(err)
+				return nil, entity.ErrInternalAndLogStack(ctx, err)
 			}
 		}
 		projects = append(projects, entity.Project{
-			Id:         entity.ID(id),
-			Name:       name,
-			StartMonth: startYearMonth,
-			EndMonth:   endYearMonth,
+			Id:            id,
+			Name:          name,
+			StartMonth:    startYearMonth,
+			EndMonth:      endYearMonth,
+			TechnologyIDs: technologyIDs[id],
 		})
 	}
 
@@ -81,27 +101,52 @@ WHERE "id" = $1
 	var name string
 	var startMonth time.Time
 	var endMonth sql.NullTime
-	if err := rows.Scan(&name, &startMonth, &endMonth); err != nil {
+	if err := rows.Scan(ctx, &name, &startMonth, &endMonth); err != nil {
 		return entity.Project{}, err
+	}
+	if err := rows.Close(); err != nil {
+		return entity.Project{}, nil
 	}
 
 	startYearMonth, err := entity.NewYearMonth(startMonth.Year(), int(startMonth.Month()))
 	if err != nil {
-		return entity.Project{}, errors.WithStack(err)
+		return entity.Project{}, entity.ErrInternalAndLogStack(ctx, err)
 	}
 	var endYearMonth entity.YearMonth
 	if endMonth.Valid {
 		endYearMonth, err = entity.NewYearMonth(endMonth.Time.Year(), int(endMonth.Time.Month()))
 		if err != nil {
-			return entity.Project{}, errors.WithStack(err)
+			return entity.Project{}, entity.ErrInternalAndLogStack(ctx, err)
 		}
 	}
 
+	technologyIDsQuery := `
+SELECT "technology_id"
+FROM "project_technology"
+WHERE "project_id" = $1
+`
+	technologyIDsRows, err := r.sqlHandler.QueryContext(ctx, technologyIDsQuery, id)
+	if err != nil {
+		return entity.Project{}, nil
+	}
+	defer technologyIDsRows.Close()
+
+	technologyIDs := []entity.ID{}
+	for technologyIDsRows.Next() {
+		var technologyID entity.ID
+		if err := technologyIDsRows.Scan(ctx, &technologyID); err != nil {
+			return entity.Project{}, nil
+		}
+
+		technologyIDs = append(technologyIDs, technologyID)
+	}
+
 	return entity.Project{
-		Id:         id,
-		Name:       name,
-		StartMonth: startYearMonth,
-		EndMonth:   endYearMonth,
+		Id:            id,
+		Name:          name,
+		StartMonth:    startYearMonth,
+		EndMonth:      endYearMonth,
+		TechnologyIDs: technologyIDs,
 	}, nil
 }
 

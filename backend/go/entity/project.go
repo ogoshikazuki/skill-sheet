@@ -9,7 +9,8 @@ type Project struct {
 	Name       string
 	StartMonth YearMonth
 	// EndMonth 現在進行形のプロジェクトの場合null相当となる
-	EndMonth YearMonth
+	EndMonth      YearMonth
+	TechnologyIDs []ID
 }
 
 type ProjectOrderField int

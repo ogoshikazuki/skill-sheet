@@ -23,22 +23,17 @@ type BasicInformation struct {
 	Gender             Gender      `json:"gender"`
 }
 
-type Project struct {
-	ID         scalar.ID        `json:"id"`
-	Name       string           `json:"name"`
-	StartMonth entity.YearMonth `json:"startMonth"`
-	EndMonth   entity.YearMonth `json:"endMonth,omitempty"`
-}
-
-func (Project) IsNode()               {}
-func (this Project) GetID() scalar.ID { return this.ID }
-
 type ProjectOrder struct {
 	Field     ProjectOrderField `json:"field"`
 	Direction OrderDirection    `json:"direction"`
 }
 
 type Query struct {
+}
+
+type Technology struct {
+	ID   scalar.ID `json:"id"`
+	Name string    `json:"name"`
 }
 
 type Gender string
