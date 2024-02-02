@@ -8,8 +8,9 @@ jobs:
   dependabot:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
+    env:
+      PR_URL: ${{github.event.pull_request.html_url}}
+      GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     steps:
-      - run: gh pr review --approve ${{github.event.pull_request.html_url}}
-      - run: gh pr merge --auto --squash ${{github.event.pull_request.html_url}}
-        env:
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: gh pr review --approve "$PR_URL"
+      - run: gh pr merge --auto --squash "$PR_URL"
