@@ -49,11 +49,20 @@ func (r *queryResolver) Node(ctx context.Context, id scalar.ID) (model.Node, err
 			return nil, err
 		}
 
+		technologyIDs := []scalar.ID{}
+		for _, technologyID := range output.Project.TechnologyIDs {
+			technologyIDs = append(technologyIDs, scalar.NewID(
+				"Technology",
+				technologyID,
+			))
+		}
+
 		return model.Project{
-			ID:         id,
-			Name:       output.Project.Name,
-			StartMonth: output.Project.StartMonth,
-			EndMonth:   output.Project.EndMonth,
+			ID:            id,
+			Name:          output.Project.Name,
+			StartMonth:    output.Project.StartMonth,
+			EndMonth:      output.Project.EndMonth,
+			TechnologyIDs: technologyIDs,
 		}, nil
 	}
 

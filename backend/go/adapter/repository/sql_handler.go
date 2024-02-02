@@ -16,7 +16,7 @@ type (
 	}
 
 	Rows interface {
-		Scan(dest ...any) error
+		Scan(context.Context, ...any) error
 		Next() bool
 		Close() error
 	}

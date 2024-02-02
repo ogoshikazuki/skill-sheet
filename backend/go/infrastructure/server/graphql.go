@@ -10,20 +10,23 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/ogoshikazuki/skill-sheet/config"
+	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/server/middleware"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 type Server struct {
-	cfg    config.Config
-	logger *log.Logger
+	cfg     config.Config
+	logger  *log.Logger
+	handler http.Handler
 }
 
 func NewServer(cfg config.Config, logger *log.Logger) Server {
 	return Server{
-		cfg:    cfg,
-		logger: logger,
+		cfg:     cfg,
+		logger:  logger,
+		handler: http.DefaultServeMux,
 	}
 }
 
@@ -31,34 +34,43 @@ func (s Server) Start() {
 	s.handleHealth()
 	s.handleGraphQL()
 
+	s.applyMiddleware()
+
 	s.listen()
 }
 
-func (s Server) handleHealth() {
+func (s *Server) handleHealth() {
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 }
 
-func (s Server) handleGraphQL() {
+func (s *Server) handleGraphQL() {
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
-		var gqlError *gqlerror.Error
-		if errors.As(err, &gqlError) {
-			return gqlError
+		if errors.Is(err, entity.ErrInternal) {
+			return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
 		}
 
-		s.logger.Printf("%+v", errors.Unwrap(err))
-		return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
+		return graphql.DefaultErrorPresenter(ctx, err)
 	})
 	http.Handle("/query", srv)
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 }
 
-func (s Server) listen() {
-	handler := middleware.CORS(middleware.WithCORSAllowedOrigins(s.cfg.CORSAllowedOrigins))(http.DefaultServeMux)
+func (s *Server) applyMiddleware() {
+	middlewares := [](func(http.Handler) http.Handler){
+		middleware.CORS(middleware.WithCORSAllowedOrigins(s.cfg.CORSAllowedOrigins)),
+		middleware.Dataloader(),
+	}
 
+	for _, middleware := range middlewares {
+		s.handler = middleware(s.handler)
+	}
+}
+
+func (s *Server) listen() {
 	s.logger.Printf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
-	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, handler))
+	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, s.handler))
 }

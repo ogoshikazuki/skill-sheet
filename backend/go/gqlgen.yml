@@ -66,7 +66,7 @@ resolver:
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-#  - "github.com/ogoshikazuki/skill-sheet/graph/model"
+ - "github.com/ogoshikazuki/skill-sheet/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -90,3 +90,7 @@ models:
     model: github.com/ogoshikazuki/skill-sheet/graph/scalar.Date
   YearMonth:
     model: github.com/ogoshikazuki/skill-sheet/graph/scalar.YearMonth
+  Project:
+    fields:
+      technologies:
+        resolver: true

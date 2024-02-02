@@ -40,6 +40,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Project() ProjectResolver
 	Query() QueryResolver
 }
 
@@ -55,10 +56,11 @@ type ComplexityRoot struct {
 	}
 
 	Project struct {
-		EndMonth   func(childComplexity int) int
-		ID         func(childComplexity int) int
-		Name       func(childComplexity int) int
-		StartMonth func(childComplexity int) int
+		EndMonth     func(childComplexity int) int
+		ID           func(childComplexity int) int
+		Name         func(childComplexity int) int
+		StartMonth   func(childComplexity int) int
+		Technologies func(childComplexity int) int
 	}
 
 	Query struct {
@@ -66,8 +68,16 @@ type ComplexityRoot struct {
 		Node             func(childComplexity int, id scalar.ID) int
 		Projects         func(childComplexity int, orderBy []*model.ProjectOrder) int
 	}
+
+	Technology struct {
+		ID   func(childComplexity int) int
+		Name func(childComplexity int) int
+	}
 }
 
+type ProjectResolver interface {
+	Technologies(ctx context.Context, obj *model.Project) ([]*model.Technology, error)
+}
 type QueryResolver interface {
 	BasicInformation(ctx context.Context) (*model.BasicInformation, error)
 	Node(ctx context.Context, id scalar.ID) (model.Node, error)
@@ -149,6 +159,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Project.StartMonth(childComplexity), true
 
+	case "Project.technologies":
+		if e.complexity.Project.Technologies == nil {
+			break
+		}
+
+		return e.complexity.Project.Technologies(childComplexity), true
+
 	case "Query.basicInformation":
 		if e.complexity.Query.BasicInformation == nil {
 			break
@@ -179,6 +196,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Projects(childComplexity, args["orderBy"].([]*model.ProjectOrder)), true
+
+	case "Technology.id":
+		if e.complexity.Technology.ID == nil {
+			break
+		}
+
+		return e.complexity.Technology.ID(childComplexity), true
+
+	case "Technology.name":
+		if e.complexity.Technology.Name == nil {
+			break
+		}
+
+		return e.complexity.Technology.Name(childComplexity), true
 
 	}
 	return 0, false
@@ -289,6 +320,7 @@ type Project implements Node {
   name: String!
   startMonth: YearMonth!
   endMonth: YearMonth
+  technologies: [Technology!]!
 }
 
 input ProjectOrder {
@@ -328,6 +360,11 @@ enum Gender {
 enum OrderDirection {
   ASC
   DESC
+}
+`, BuiltIn: false},
+	{Name: "../../../graphql/technology.graphqls", Input: `type Technology {
+  id: ID!
+  name: String!
 }
 `, BuiltIn: false},
 }
@@ -769,6 +806,56 @@ func (ec *executionContext) fieldContext_Project_endMonth(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Project_technologies(ctx context.Context, field graphql.CollectedField, obj *model.Project) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Project_technologies(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Project().Technologies(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Technology)
+	fc.Result = res
+	return ec.marshalNTechnology2ᚕᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐTechnologyᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Project_technologies(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Project",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Technology_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Technology_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Technology", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_basicInformation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_basicInformation(ctx, field)
 	if err != nil {
@@ -922,6 +1009,8 @@ func (ec *executionContext) fieldContext_Query_projects(ctx context.Context, fie
 				return ec.fieldContext_Project_startMonth(ctx, field)
 			case "endMonth":
 				return ec.fieldContext_Project_endMonth(ctx, field)
+			case "technologies":
+				return ec.fieldContext_Project_technologies(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Project", field.Name)
 		},
@@ -1064,6 +1153,94 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Technology_id(ctx context.Context, field graphql.CollectedField, obj *model.Technology) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Technology_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(scalar.ID)
+	fc.Result = res
+	return ec.marshalNID2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋscalarᚐID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Technology_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Technology",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Technology_name(ctx context.Context, field graphql.CollectedField, obj *model.Technology) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Technology_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Technology_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Technology",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2968,20 +3145,56 @@ func (ec *executionContext) _Project(ctx context.Context, sel ast.SelectionSet, 
 		case "id":
 			out.Values[i] = ec._Project_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "name":
 			out.Values[i] = ec._Project_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "startMonth":
 			out.Values[i] = ec._Project_startMonth(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "endMonth":
 			out.Values[i] = ec._Project_endMonth(ctx, field, obj)
+		case "technologies":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Project_technologies(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3095,6 +3308,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var technologyImplementors = []string{"Technology"}
+
+func (ec *executionContext) _Technology(ctx context.Context, sel ast.SelectionSet, obj *model.Technology) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, technologyImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Technology")
+		case "id":
+			out.Values[i] = ec._Technology_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "name":
+			out.Values[i] = ec._Technology_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3617,6 +3874,60 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNTechnology2ᚕᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐTechnologyᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Technology) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTechnology2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐTechnology(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNTechnology2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐTechnology(ctx context.Context, sel ast.SelectionSet, v *model.Technology) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Technology(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNYearMonth2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐYearMonth(ctx context.Context, v interface{}) (entity.YearMonth, error) {

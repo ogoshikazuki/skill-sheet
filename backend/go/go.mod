@@ -8,6 +8,7 @@ require (
 	github.com/matryer/moq v0.3.3
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vikstrous/dataloadgen v0.0.6
 )
 
 require (
@@ -23,6 +24,8 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
+	go.opentelemetry.io/otel v1.11.1 // indirect
+	go.opentelemetry.io/otel/trace v1.11.1 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 )
 

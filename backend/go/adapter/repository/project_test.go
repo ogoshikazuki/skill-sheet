@@ -36,21 +36,24 @@ func TestProjectSearch(t *testing.T) {
 			sqlHandler: sqlHandler,
 			expectedProjects: []entity.Project{
 				{
-					Id:         3,
-					Name:       "健診PHR開発プロジェクト",
-					StartMonth: yearMonth202110,
+					Id:            3,
+					Name:          "健診PHR開発プロジェクト",
+					StartMonth:    yearMonth202110,
+					TechnologyIDs: []entity.ID{4, 5},
 				},
 				{
-					Id:         2,
-					Name:       "オンライン商談システムの管理画面保守開発",
-					StartMonth: yearMonth202007,
-					EndMonth:   yearMonth202103,
+					Id:            2,
+					Name:          "オンライン商談システムの管理画面保守開発",
+					StartMonth:    yearMonth202007,
+					EndMonth:      yearMonth202103,
+					TechnologyIDs: []entity.ID{1, 2, 3},
 				},
 				{
-					Id:         1,
-					Name:       "人材紹介会社向けクラウド型業務管理システムのリニューアル",
-					StartMonth: yearMonth201704,
-					EndMonth:   yearMonth201808,
+					Id:            1,
+					Name:          "人材紹介会社向けクラウド型業務管理システムのリニューアル",
+					StartMonth:    yearMonth201704,
+					EndMonth:      yearMonth201808,
+					TechnologyIDs: []entity.ID{1, 2},
 				},
 			},
 		},
@@ -68,21 +71,24 @@ func TestProjectSearch(t *testing.T) {
 			sqlHandler: sqlHandler,
 			expectedProjects: []entity.Project{
 				{
-					Id:         1,
-					Name:       "人材紹介会社向けクラウド型業務管理システムのリニューアル",
-					StartMonth: yearMonth201704,
-					EndMonth:   yearMonth201808,
+					Id:            1,
+					Name:          "人材紹介会社向けクラウド型業務管理システムのリニューアル",
+					StartMonth:    yearMonth201704,
+					EndMonth:      yearMonth201808,
+					TechnologyIDs: []entity.ID{1, 2},
 				},
 				{
-					Id:         2,
-					Name:       "オンライン商談システムの管理画面保守開発",
-					StartMonth: yearMonth202007,
-					EndMonth:   yearMonth202103,
+					Id:            2,
+					Name:          "オンライン商談システムの管理画面保守開発",
+					StartMonth:    yearMonth202007,
+					EndMonth:      yearMonth202103,
+					TechnologyIDs: []entity.ID{1, 2, 3},
 				},
 				{
-					Id:         3,
-					Name:       "健診PHR開発プロジェクト",
-					StartMonth: yearMonth202110,
+					Id:            3,
+					Name:          "健診PHR開発プロジェクト",
+					StartMonth:    yearMonth202110,
+					TechnologyIDs: []entity.ID{4, 5},
 				},
 			},
 		},
@@ -126,10 +132,11 @@ func TestProjectFind(t *testing.T) {
 			id:         1,
 			sqlHandler: sqlHandler,
 			expectedProject: entity.Project{
-				Id:         1,
-				Name:       "人材紹介会社向けクラウド型業務管理システムのリニューアル",
-				StartMonth: yearMonth201704,
-				EndMonth:   yearMonth201808,
+				Id:            1,
+				Name:          "人材紹介会社向けクラウド型業務管理システムのリニューアル",
+				StartMonth:    yearMonth201704,
+				EndMonth:      yearMonth201808,
+				TechnologyIDs: []entity.ID{1, 2},
 			},
 		},
 		"NotFound": {
@@ -153,7 +160,7 @@ func TestProjectFind(t *testing.T) {
 			repo := repository.NewProjectRepository(tt.sqlHandler)
 			project, err := repo.Find(ctx, tt.id)
 
-			if project != tt.expectedProject {
+			if !reflect.DeepEqual(project, tt.expectedProject) {
 				t.Errorf("project: %+v, expectedProject: %+v", project, tt.expectedProject)
 			}
 			if (err == nil) == tt.expectedReturnsErr {
