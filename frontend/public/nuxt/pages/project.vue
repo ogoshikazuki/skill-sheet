@@ -36,7 +36,16 @@ const convertYearMonthForDisplay = (yearMonth: string) => {
         </v-card-title>
       </v-card-item>
       <v-card-text>
-        {{ convertYearMonthForDisplay(project.startMonth) }} ~ {{ project.endMonth === null ? "" : convertYearMonthForDisplay(project.endMonth) }}
+        <v-list>
+          <v-list-item>
+            <v-chip v-for="technology in project.technologies" :key="technology.id" class="ma-1">
+              {{ technology.name }}
+            </v-chip>
+          </v-list-item>
+          <v-list-item>
+            {{ convertYearMonthForDisplay(project.startMonth) }} ~ {{ project.endMonth === null ? "" : convertYearMonthForDisplay(project.endMonth) }}
+          </v-list-item>
+        </v-list>
       </v-card-text>
     </v-card>
   </div>

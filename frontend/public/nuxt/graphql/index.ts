@@ -33,17 +33,22 @@ export enum Gender {
   Male = 'MALE'
 }
 
+export type Node = {
+  id: Scalars['ID']['output'];
+};
+
 export enum OrderDirection {
   Asc = 'ASC',
   Desc = 'DESC'
 }
 
-export type Project = {
+export type Project = Node & {
   __typename?: 'Project';
   endMonth?: Maybe<Scalars['YearMonth']['output']>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   startMonth: Scalars['YearMonth']['output'];
+  technologies: Array<Technology>;
 };
 
 export type ProjectOrder = {
@@ -59,12 +64,24 @@ export enum ProjectOrderField {
 export type Query = {
   __typename?: 'Query';
   basicInformation: BasicInformation;
+  node?: Maybe<Node>;
   projects: Array<Project>;
+};
+
+
+export type QueryNodeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type QueryProjectsArgs = {
   orderBy?: Array<ProjectOrder>;
+};
+
+export type Technology = {
+  __typename?: 'Technology';
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type BasicInformationQueryVariables = Exact<{ [key: string]: never; }>;
@@ -75,7 +92,7 @@ export type BasicInformationQuery = { __typename?: 'Query', basicInformation: { 
 export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, name: string, startMonth: any, endMonth?: any | null }> };
+export type ProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', id: string, name: string, startMonth: any, endMonth?: any | null, technologies: Array<{ __typename?: 'Technology', id: string, name: string }> }> };
 
 
 export const BasicInformationDocument = gql`
@@ -115,6 +132,10 @@ export const ProjectsDocument = gql`
     name
     startMonth
     endMonth
+    technologies {
+      id
+      name
+    }
   }
 }
     `;
