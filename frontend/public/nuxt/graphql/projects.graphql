@@ -4,5 +4,9 @@ query Projects {
     name
     startMonth
     endMonth
+    technologies {
+      id
+      name
+    }
   }
 }
