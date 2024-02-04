@@ -13,8 +13,7 @@ import (
 )
 
 type sqlHandler struct {
-	db     *sql.DB
-	logger entity.Logger
+	db *sql.DB
 }
 
 func (handler *sqlHandler) ExecContext(ctx context.Context, query string, args ...any) (repository.Result, error) {
