@@ -41,7 +41,7 @@ func GetTechnologyFromDataloader(ctx context.Context, id entity.ID) (entity.Tech
 		if err, ok := err.(dataloadgen.ErrorSlice); ok {
 			return technology, errorSlice(err)
 		}
-		return technology, entity.ErrInternalAndLogStack(ctx, err)
+		return technology, entity.NewInternalServerError(err)
 	}
 	return technology, nil
 }

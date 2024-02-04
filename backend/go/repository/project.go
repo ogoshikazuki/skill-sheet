@@ -30,7 +30,7 @@ FROM project_technology
 	technologyIDs := map[entity.ID]([]entity.ID){}
 	for technologyIDsRows.Next() {
 		var projectID, technologyID entity.ID
-		if err := technologyIDsRows.Scan(ctx, &projectID, &technologyID); err != nil {
+		if err := technologyIDsRows.Scan(&projectID, &technologyID); err != nil {
 			return nil, err
 		}
 
@@ -55,19 +55,19 @@ FROM "projects"
 		var name string
 		var startMonth time.Time
 		var endMonth sql.NullTime
-		if err := rows.Scan(ctx, &id, &name, &startMonth, &endMonth); err != nil {
+		if err := rows.Scan(&id, &name, &startMonth, &endMonth); err != nil {
 			return []entity.Project{}, err
 		}
 
 		startYearMonth, err := entity.NewYearMonth(startMonth.Year(), int(startMonth.Month()))
 		if err != nil {
-			return nil, entity.ErrInternalAndLogStack(ctx, err)
+			return nil, entity.NewInternalServerError(err)
 		}
 		var endYearMonth entity.YearMonth
 		if endMonth.Valid {
 			endYearMonth, err = entity.NewYearMonth(endMonth.Time.Year(), int(endMonth.Time.Month()))
 			if err != nil {
-				return nil, entity.ErrInternalAndLogStack(ctx, err)
+				return nil, entity.NewInternalServerError(err)
 			}
 		}
 		projects = append(projects, entity.Project{
@@ -101,7 +101,7 @@ WHERE "id" = $1
 	var name string
 	var startMonth time.Time
 	var endMonth sql.NullTime
-	if err := rows.Scan(ctx, &name, &startMonth, &endMonth); err != nil {
+	if err := rows.Scan(&name, &startMonth, &endMonth); err != nil {
 		return entity.Project{}, err
 	}
 	if err := rows.Close(); err != nil {
@@ -110,13 +110,13 @@ WHERE "id" = $1
 
 	startYearMonth, err := entity.NewYearMonth(startMonth.Year(), int(startMonth.Month()))
 	if err != nil {
-		return entity.Project{}, entity.ErrInternalAndLogStack(ctx, err)
+		return entity.Project{}, entity.NewInternalServerError(err)
 	}
 	var endYearMonth entity.YearMonth
 	if endMonth.Valid {
 		endYearMonth, err = entity.NewYearMonth(endMonth.Time.Year(), int(endMonth.Time.Month()))
 		if err != nil {
-			return entity.Project{}, entity.ErrInternalAndLogStack(ctx, err)
+			return entity.Project{}, entity.NewInternalServerError(err)
 		}
 	}
 
@@ -134,7 +134,7 @@ WHERE "project_id" = $1
 	technologyIDs := []entity.ID{}
 	for technologyIDsRows.Next() {
 		var technologyID entity.ID
-		if err := technologyIDsRows.Scan(ctx, &technologyID); err != nil {
+		if err := technologyIDsRows.Scan(&technologyID); err != nil {
 			return entity.Project{}, nil
 		}
 

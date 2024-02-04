@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
+	"os"
 
 	"github.com/ogoshikazuki/skill-sheet/config"
+	"github.com/ogoshikazuki/skill-sheet/infrastructure/logger"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/postgres"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/server"
 )
@@ -11,7 +12,7 @@ import (
 func main() {
 	cfg := config.NewConfig()
 
-	logger := log.Default()
+	logger := logger.NewStandardLogger()
 
 	sqlhandler, err := postgres.NewSqlHandler(
 		cfg.PostgresHost,
@@ -21,7 +22,8 @@ func main() {
 		cfg.PostgresDbname,
 	)
 	if err != nil {
-		logger.Fatal(err)
+		logger.Errorf("%+v", err)
+		os.Exit(1)
 	}
 
 	server.NewServer(cfg, logger, sqlhandler).Start()

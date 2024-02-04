@@ -1,18 +1,23 @@
 package entity
 
-import (
-	"context"
-	"log"
+import "github.com/cockroachdb/errors"
 
-	"github.com/cockroachdb/errors"
-)
+type InternalServerError struct {
+	errWithStack error
+}
 
-var (
-	ErrInternal = errors.New("internal server error")
-)
+var _ error = (*InternalServerError)(nil)
 
-func ErrInternalAndLogStack(_ context.Context, err error) error {
-	log.Printf("%+v", errors.WithStack(err))
+func (e *InternalServerError) Error() string {
+	return "internal server error"
+}
 
-	return ErrInternal
+func (e *InternalServerError) ErrWithStack() error {
+	return e.errWithStack
+}
+
+func NewInternalServerError(err error) *InternalServerError {
+	return &InternalServerError{
+		errWithStack: errors.WithStack(err),
+	}
 }

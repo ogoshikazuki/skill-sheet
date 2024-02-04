@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
+	"os"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -20,12 +20,12 @@ import (
 
 type Server struct {
 	cfg        config.Config
-	logger     *log.Logger
+	logger     entity.Logger
 	sqlHandler repository.SqlHandler
 	handler    http.Handler
 }
 
-func NewServer(cfg config.Config, logger *log.Logger, sqlHandler repository.SqlHandler) Server {
+func NewServer(cfg config.Config, logger entity.Logger, sqlHandler repository.SqlHandler) Server {
 	return Server{
 		cfg:        cfg,
 		logger:     logger,
@@ -56,8 +56,9 @@ func (s *Server) handleGraphQL() {
 		usecase.NewSearchProjectsUsecase(repository.NewProjectRepository(s.sqlHandler)),
 	)}))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
-		if errors.Is(err, entity.ErrInternal) {
-			return graphql.DefaultErrorPresenter(ctx, errors.New("internal server error"))
+		var internalServerError *entity.InternalServerError
+		if errors.As(err, &internalServerError) {
+			s.logger.Errorf("%+v", internalServerError.ErrWithStack())
 		}
 
 		return graphql.DefaultErrorPresenter(ctx, err)
@@ -79,6 +80,7 @@ func (s *Server) applyMiddleware() {
 }
 
 func (s *Server) listen() {
-	s.logger.Printf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
-	s.logger.Fatal(http.ListenAndServe(":"+s.cfg.Port, s.handler))
+	s.logger.Errorf("connect to http://localhost:%s/ for GraphQL playground", s.cfg.Port)
+	s.logger.Errorf("%+v", http.ListenAndServe(":"+s.cfg.Port, s.handler))
+	os.Exit(1)
 }
