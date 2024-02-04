@@ -6,15 +6,15 @@ import (
 	"net/http"
 
 	"github.com/cockroachdb/errors"
-	"github.com/ogoshikazuki/skill-sheet/di"
+	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/vikstrous/dataloadgen"
 )
 
-func Dataloader() func(http.Handler) http.Handler {
+func Dataloader(sqlHandler repository.SqlHandler) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			loaders := newLoaders()
+			loaders := newLoaders(sqlHandler)
 			r = r.WithContext(context.WithValue(r.Context(), loadersKey, loaders))
 			next.ServeHTTP(w, r)
 		})
@@ -25,9 +25,9 @@ type loaders struct {
 	technologyLoader *dataloadgen.Loader[entity.ID, entity.Technology]
 }
 
-func newLoaders() *loaders {
+func newLoaders(sqlHandler repository.SqlHandler) *loaders {
 	return &loaders{
-		technologyLoader: dataloadgen.NewLoader(di.Repositories.TechnologyRepository.SearchByIDsWithMultipleErr),
+		technologyLoader: dataloadgen.NewLoader(repository.NewTechnologyRepository(sqlHandler).SearchByIDsWithMultipleErr),
 	}
 }
 

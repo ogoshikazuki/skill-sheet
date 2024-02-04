@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/ogoshikazuki/skill-sheet/config"
-	"github.com/ogoshikazuki/skill-sheet/di"
+	"github.com/ogoshikazuki/skill-sheet/infrastructure/postgres"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/server"
 )
 
@@ -13,9 +13,16 @@ func main() {
 
 	logger := log.Default()
 
-	if err := di.Di(cfg); err != nil {
+	sqlhandler, err := postgres.NewSqlHandler(
+		cfg.PostgresHost,
+		cfg.PostgresPort,
+		cfg.PostgresUser,
+		cfg.PostgresPassword,
+		cfg.PostgresDbname,
+	)
+	if err != nil {
 		logger.Fatal(err)
 	}
 
-	server.NewServer(cfg, logger).Start()
+	server.NewServer(cfg, logger, sqlhandler).Start()
 }

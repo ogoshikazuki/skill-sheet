@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 
-	"github.com/ogoshikazuki/skill-sheet/di"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
 	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
@@ -16,7 +15,7 @@ import (
 
 // BasicInformation is the resolver for the basicInformation field.
 func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInformation, error) {
-	output, err := di.Usecases.FindBasicInformationUsecase.Handle(ctx)
+	output, err := r.findBasicInformationUsecase.Handle(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +41,7 @@ func (r *queryResolver) Node(ctx context.Context, id scalar.ID) (model.Node, err
 
 	switch typename {
 	case "Project":
-		output, err := di.Usecases.FindProjectUsecase.Handle(ctx, usecase.FindProjectInput{
+		output, err := r.findProjectUsecase.Handle(ctx, usecase.FindProjectInput{
 			ID: id.GetID(),
 		})
 		if err != nil {

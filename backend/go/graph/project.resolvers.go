@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 
-	"github.com/ogoshikazuki/skill-sheet/di"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
 	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
@@ -57,7 +56,7 @@ func (r *queryResolver) Projects(ctx context.Context, orderBy []*model.ProjectOr
 		})
 	}
 
-	output, err := di.Usecases.SearchProjectsUsecase.Handle(ctx, input)
+	output, err := r.searchProjectsUsecase.Handle(ctx, input)
 	if err != nil {
 		return nil, err
 	}
