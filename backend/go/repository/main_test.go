@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/postgres"
+	"github.com/ogoshikazuki/skill-sheet/repository"
 )
 
 var postgresHost, postgresPort, postgresUser, postgresPassword, postgresDbname string

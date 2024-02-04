@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/entity"
+	"github.com/ogoshikazuki/skill-sheet/repository"
 	"github.com/tanimutomo/sqlfile"
 
 	_ "github.com/lib/pq"
