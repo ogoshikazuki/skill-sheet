@@ -9,11 +9,11 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/config"
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/server/middleware"
+	"github.com/ogoshikazuki/skill-sheet/repository"
 	"github.com/ogoshikazuki/skill-sheet/usecase"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/entity"
+	"github.com/ogoshikazuki/skill-sheet/repository"
 )
 
 func TestBasicInformationRepositoryFind(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ogoshikazuki/skill-sheet/adapter/repository"
 	"github.com/ogoshikazuki/skill-sheet/infrastructure/postgres"
+	"github.com/ogoshikazuki/skill-sheet/repository"
 )
 
 var postgresHost, postgresPort, postgresUser, postgresPassword, postgresDbname string
@@ -75,7 +75,7 @@ func createTestDbAndSetSqlHandler(ctx context.Context, sqlhandlerToManageTestDb 
 }
 
 func initTestDb(ctx context.Context) {
-	if _, err := sqlHandler.ExecContextFromFile(ctx, filepath.Join("..", "..", "..", "postgres", "init")); err != nil {
+	if _, err := sqlHandler.ExecContextFromFile(ctx, filepath.Join("..", "..", "postgres", "init")); err != nil {
 		panic(err)
 	}
 }
