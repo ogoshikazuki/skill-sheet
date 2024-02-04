@@ -75,7 +75,7 @@ func createTestDbAndSetSqlHandler(ctx context.Context, sqlhandlerToManageTestDb 
 }
 
 func initTestDb(ctx context.Context) {
-	if _, err := sqlHandler.ExecContextFromFile(ctx, filepath.Join("..", "..", "..", "postgres", "init")); err != nil {
+	if _, err := sqlHandler.ExecContextFromFile(ctx, filepath.Join("..", "..", "postgres", "init")); err != nil {
 		panic(err)
 	}
 }
