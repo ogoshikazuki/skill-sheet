@@ -28,7 +28,7 @@ func (handler *sqlHandler) ExecContext(ctx context.Context, query string, args .
 func (handler *sqlHandler) QueryContext(ctx context.Context, query string, args ...any) (repository.Rows, error) {
 	r, err := handler.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, entity.ErrInternalAndLogStack(ctx, err)
+		return nil, entity.NewInternalServerError(err)
 	}
 
 	return &rows{rows: r}, nil
@@ -38,16 +38,16 @@ func (handler *sqlHandler) Close() error {
 	return handler.db.Close()
 }
 
-func (s *sqlHandler) ExecContextFromFile(ctx context.Context, path string) ([]repository.Result, error) {
+func (s *sqlHandler) ExecFromFile(path string) ([]repository.Result, error) {
 	sf := sqlfile.New()
 
 	if err := sf.Directory(path); err != nil {
-		return nil, entity.ErrInternalAndLogStack(ctx, err)
+		return nil, entity.NewInternalServerError(err)
 	}
 
 	res, err := sf.Exec(s.db)
 	if err != nil {
-		return nil, entity.ErrInternalAndLogStack(ctx, err)
+		return nil, entity.NewInternalServerError(err)
 	}
 
 	var results []repository.Result
@@ -83,11 +83,11 @@ type rows struct {
 	rows *sql.Rows
 }
 
-func (r *rows) Scan(ctx context.Context, dest ...any) error {
+func (r *rows) Scan(dest ...any) error {
 	err := r.rows.Scan(dest...)
 
 	if err != nil {
-		return entity.ErrInternalAndLogStack(ctx, err)
+		return entity.NewInternalServerError(err)
 	}
 
 	return nil

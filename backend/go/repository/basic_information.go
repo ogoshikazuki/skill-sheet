@@ -28,7 +28,7 @@ LIMIT 1
 	var birthday time.Time
 	var gender string
 	var academicBackground string
-	if err := rows.Scan(ctx, &birthday, &gender, &academicBackground); err != nil {
+	if err := rows.Scan(&birthday, &gender, &academicBackground); err != nil {
 		return entity.BasicInformation{}, err
 	}
 

@@ -42,7 +42,7 @@ WHERE "id" IN (` + makePlaceholders(len(ids)) + `)
 
 	for rows.Next() {
 		var technology entity.Technology
-		err := rows.Scan(ctx, &technology.ID, &technology.Name)
+		err := rows.Scan(&technology.ID, &technology.Name)
 		technologies[indexes[technology.ID]] = technology
 		errs[indexes[technology.ID]] = err
 	}
