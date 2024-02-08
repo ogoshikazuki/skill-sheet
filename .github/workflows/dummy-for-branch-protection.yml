@@ -4,6 +4,7 @@ on:
       - backend/go/**
       - frontend/public/nuxt/**
       - graphql/**
+      - infrastructure/terraform/**
 
 jobs:
   lint:

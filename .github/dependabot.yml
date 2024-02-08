@@ -20,3 +20,7 @@ updates:
     directory: "/frontend/public/nuxt"
     schedule:
       interval: "daily"
+  - package-ecosystem: "terraform"
+    directory: "/infrastructure/terraform"
+    schedule:
+      interval: "daily"

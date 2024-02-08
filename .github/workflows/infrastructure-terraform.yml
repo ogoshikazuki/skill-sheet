@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - infrastructure/terraform/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - infrastructure/terraform/**
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+      - uses: terraform-linters/setup-tflint@v4
+      - run: tflint --version
+      - run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: tflint -f compact
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "dummy test for branch protection"
