@@ -3,6 +3,10 @@ type Query {
   node(id: ID!): Node
 }
 
+type Mutation {
+  updateBasicInformation(input: UpdateBasicInformationInput!): UpdateBasicInformationPayload @admin
+}
+
 interface Node {
   id: ID!
 }
