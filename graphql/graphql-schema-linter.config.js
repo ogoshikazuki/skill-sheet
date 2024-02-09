@@ -27,6 +27,6 @@ module.exports = {
     // "type-fields-sorted-alphabetically"
   ],
   "schemaPaths": [
-    "*.graphqls"
+    "schema/*.graphqls"
   ]
 }
