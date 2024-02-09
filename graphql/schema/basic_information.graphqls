@@ -1,0 +1,9 @@
+input UpdateBasicInformationInput {
+  birthday: Date
+  gender: Gender
+  academicBackground: String
+}
+
+type UpdateBasicInformationPayload {
+  basicInformation: BasicInformation!
+}
