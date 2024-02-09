@@ -1,2 +1,2 @@
-schema: graphql/*.graphqls
+schema: graphql/schema/*.graphqls
 documents: frontend/public/nuxt/graphql/*.graphql

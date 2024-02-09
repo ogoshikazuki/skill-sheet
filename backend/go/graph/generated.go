@@ -302,7 +302,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../../../graphql/project.graphqls", Input: `extend type Query {
+	{Name: "../../../graphql/schema/project.graphqls", Input: `extend type Query {
   projects(orderBy: [ProjectOrder!]! = [
     {
       field: START_MONTH
@@ -333,10 +333,10 @@ enum ProjectOrderField {
   END_MONTH
 }
 `, BuiltIn: false},
-	{Name: "../../../graphql/scalar.graphqls", Input: `scalar Date
+	{Name: "../../../graphql/schema/scalar.graphqls", Input: `scalar Date
 scalar YearMonth
 `, BuiltIn: false},
-	{Name: "../../../graphql/schema.graphqls", Input: `type Query {
+	{Name: "../../../graphql/schema/schema.graphqls", Input: `type Query {
   basicInformation: BasicInformation!
   node(id: ID!): Node
 }
@@ -362,7 +362,7 @@ enum OrderDirection {
   DESC
 }
 `, BuiltIn: false},
-	{Name: "../../../graphql/technology.graphqls", Input: `type Technology {
+	{Name: "../../../graphql/schema/technology.graphqls", Input: `type Technology {
   id: ID!
   name: String!
 }
