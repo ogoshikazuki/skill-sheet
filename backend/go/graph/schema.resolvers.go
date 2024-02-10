@@ -6,12 +6,18 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
 	"github.com/ogoshikazuki/skill-sheet/graph/scalar"
 	"github.com/ogoshikazuki/skill-sheet/usecase"
 )
+
+// UpdateBasicInformation is the resolver for the updateBasicInformation field.
+func (r *mutationResolver) UpdateBasicInformation(ctx context.Context, input model.UpdateBasicInformationInput) (*model.UpdateBasicInformationPayload, error) {
+	panic(fmt.Errorf("not implemented: UpdateBasicInformation - updateBasicInformation"))
+}
 
 // BasicInformation is the resolver for the basicInformation field.
 func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInformation, error) {
@@ -68,7 +74,11 @@ func (r *queryResolver) Node(ctx context.Context, id scalar.ID) (model.Node, err
 	return nil, nil
 }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

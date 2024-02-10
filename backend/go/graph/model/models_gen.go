@@ -23,6 +23,9 @@ type BasicInformation struct {
 	Gender             Gender      `json:"gender"`
 }
 
+type Mutation struct {
+}
+
 type ProjectOrder struct {
 	Field     ProjectOrderField `json:"field"`
 	Direction OrderDirection    `json:"direction"`
@@ -34,6 +37,16 @@ type Query struct {
 type Technology struct {
 	ID   scalar.ID `json:"id"`
 	Name string    `json:"name"`
+}
+
+type UpdateBasicInformationInput struct {
+	Birthday           *entity.Date `json:"birthday,omitempty"`
+	Gender             *Gender      `json:"gender,omitempty"`
+	AcademicBackground *string      `json:"academicBackground,omitempty"`
+}
+
+type UpdateBasicInformationPayload struct {
+	BasicInformation *BasicInformation `json:"basicInformation"`
 }
 
 type Gender string

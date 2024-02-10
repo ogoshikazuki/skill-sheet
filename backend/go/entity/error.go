@@ -21,3 +21,8 @@ func NewInternalServerError(err error) *InternalServerError {
 		errWithStack: errors.WithStack(err),
 	}
 }
+
+var (
+	ErrUnauthenticated error = errors.New("unauthenticated")
+	ErrUnauthorized    error = errors.New("unauthorized")
+)

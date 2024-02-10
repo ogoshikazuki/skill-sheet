@@ -19,6 +19,8 @@ type Config struct {
 	PostgresUser       string
 	PostgresPassword   string
 	PostgresDbname     string
+	Auth0Domain        string
+	Auth0Audience      []string
 }
 
 func NewConfig() Config {
@@ -30,5 +32,7 @@ func NewConfig() Config {
 		PostgresUser:       os.Getenv("POSTGRES_USER"),
 		PostgresPassword:   os.Getenv("POSTGRES_PASSWORD"),
 		PostgresDbname:     os.Getenv("POSTGRES_DBNAME"),
+		Auth0Domain:        os.Getenv("AUTH0_DOMAIN"),
+		Auth0Audience:      strings.Split(os.Getenv("AUTH0_AUDIENCE"), ","),
 	}
 }

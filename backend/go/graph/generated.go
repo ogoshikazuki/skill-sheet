@@ -40,11 +40,13 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Mutation() MutationResolver
 	Project() ProjectResolver
 	Query() QueryResolver
 }
 
 type DirectiveRoot struct {
+	Admin func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -53,6 +55,10 @@ type ComplexityRoot struct {
 		Birthday           func(childComplexity int) int
 		Gender             func(childComplexity int) int
 		ID                 func(childComplexity int) int
+	}
+
+	Mutation struct {
+		UpdateBasicInformation func(childComplexity int, input model.UpdateBasicInformationInput) int
 	}
 
 	Project struct {
@@ -73,8 +79,15 @@ type ComplexityRoot struct {
 		ID   func(childComplexity int) int
 		Name func(childComplexity int) int
 	}
+
+	UpdateBasicInformationPayload struct {
+		BasicInformation func(childComplexity int) int
+	}
 }
 
+type MutationResolver interface {
+	UpdateBasicInformation(ctx context.Context, input model.UpdateBasicInformationInput) (*model.UpdateBasicInformationPayload, error)
+}
 type ProjectResolver interface {
 	Technologies(ctx context.Context, obj *model.Project) ([]*model.Technology, error)
 }
@@ -130,6 +143,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BasicInformation.ID(childComplexity), true
+
+	case "Mutation.updateBasicInformation":
+		if e.complexity.Mutation.UpdateBasicInformation == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateBasicInformation_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateBasicInformation(childComplexity, args["input"].(model.UpdateBasicInformationInput)), true
 
 	case "Project.endMonth":
 		if e.complexity.Project.EndMonth == nil {
@@ -211,6 +236,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Technology.Name(childComplexity), true
 
+	case "UpdateBasicInformationPayload.basicInformation":
+		if e.complexity.UpdateBasicInformationPayload.BasicInformation == nil {
+			break
+		}
+
+		return e.complexity.UpdateBasicInformationPayload.BasicInformation(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -220,6 +252,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputProjectOrder,
+		ec.unmarshalInputUpdateBasicInformationInput,
 	)
 	first := true
 
@@ -253,6 +286,21 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 
 			return &response
+		}
+	case ast.Mutation:
+		return func(ctx context.Context) *graphql.Response {
+			if !first {
+				return nil
+			}
+			first = false
+			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
+			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
+			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
 		}
 
 	default:
@@ -302,6 +350,18 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../../../graphql/schema/basic_information.graphqls", Input: `input UpdateBasicInformationInput {
+  birthday: Date
+  gender: Gender
+  academicBackground: String
+}
+
+type UpdateBasicInformationPayload {
+  basicInformation: BasicInformation!
+}
+`, BuiltIn: false},
+	{Name: "../../../graphql/schema/directive.graphqls", Input: `directive @admin on FIELD_DEFINITION
+`, BuiltIn: false},
 	{Name: "../../../graphql/schema/project.graphqls", Input: `extend type Query {
   projects(orderBy: [ProjectOrder!]! = [
     {
@@ -341,6 +401,10 @@ scalar YearMonth
   node(id: ID!): Node
 }
 
+type Mutation {
+  updateBasicInformation(input: UpdateBasicInformationInput!): UpdateBasicInformationPayload @admin
+}
+
 interface Node {
   id: ID!
 }
@@ -373,6 +437,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_updateBasicInformation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UpdateBasicInformationInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUpdateBasicInformationInput2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -629,6 +708,82 @@ func (ec *executionContext) fieldContext_BasicInformation_gender(ctx context.Con
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Gender does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateBasicInformation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateBasicInformation(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UpdateBasicInformation(rctx, fc.Args["input"].(model.UpdateBasicInformationInput))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.Admin == nil {
+				return nil, errors.New("directive admin is not implemented")
+			}
+			return ec.directives.Admin(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.UpdateBasicInformationPayload); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/ogoshikazuki/skill-sheet/graph/model.UpdateBasicInformationPayload`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.UpdateBasicInformationPayload)
+	fc.Result = res
+	return ec.marshalOUpdateBasicInformationPayload2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateBasicInformation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "basicInformation":
+				return ec.fieldContext_UpdateBasicInformationPayload_basicInformation(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UpdateBasicInformationPayload", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateBasicInformation_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -1241,6 +1396,60 @@ func (ec *executionContext) fieldContext_Technology_name(ctx context.Context, fi
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UpdateBasicInformationPayload_basicInformation(ctx context.Context, field graphql.CollectedField, obj *model.UpdateBasicInformationPayload) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UpdateBasicInformationPayload_basicInformation(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BasicInformation, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.BasicInformation)
+	fc.Result = res
+	return ec.marshalNBasicInformation2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐBasicInformation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UpdateBasicInformationPayload_basicInformation(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UpdateBasicInformationPayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_BasicInformation_id(ctx, field)
+			case "academicBackground":
+				return ec.fieldContext_BasicInformation_academicBackground(ctx, field)
+			case "birthday":
+				return ec.fieldContext_BasicInformation_birthday(ctx, field)
+			case "gender":
+				return ec.fieldContext_BasicInformation_gender(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type BasicInformation", field.Name)
 		},
 	}
 	return fc, nil
@@ -3053,6 +3262,47 @@ func (ec *executionContext) unmarshalInputProjectOrder(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateBasicInformationInput(ctx context.Context, obj interface{}) (model.UpdateBasicInformationInput, error) {
+	var it model.UpdateBasicInformationInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"birthday", "gender", "academicBackground"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "birthday":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthday"))
+			data, err := ec.unmarshalODate2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Birthday = data
+		case "gender":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
+			data, err := ec.unmarshalOGender2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Gender = data
+		case "academicBackground":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("academicBackground"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AcademicBackground = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -3108,6 +3358,52 @@ func (ec *executionContext) _BasicInformation(ctx context.Context, sel ast.Selec
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var mutationImplementors = []string{"Mutation"}
+
+func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, mutationImplementors)
+	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
+		Object: "Mutation",
+	})
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
+			Object: field.Name,
+			Field:  field,
+		})
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Mutation")
+		case "updateBasicInformation":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateBasicInformation(ctx, field)
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3349,6 +3645,45 @@ func (ec *executionContext) _Technology(ctx context.Context, sel ast.SelectionSe
 			}
 		case "name":
 			out.Values[i] = ec._Technology_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var updateBasicInformationPayloadImplementors = []string{"UpdateBasicInformationPayload"}
+
+func (ec *executionContext) _UpdateBasicInformationPayload(ctx context.Context, sel ast.SelectionSet, obj *model.UpdateBasicInformationPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, updateBasicInformationPayloadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UpdateBasicInformationPayload")
+		case "basicInformation":
+			out.Values[i] = ec._UpdateBasicInformationPayload_basicInformation(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -3930,6 +4265,11 @@ func (ec *executionContext) marshalNTechnology2ᚖgithubᚗcomᚋogoshikazukiᚋ
 	return ec._Technology(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNUpdateBasicInformationInput2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationInput(ctx context.Context, v interface{}) (model.UpdateBasicInformationInput, error) {
+	res, err := ec.unmarshalInputUpdateBasicInformationInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNYearMonth2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐYearMonth(ctx context.Context, v interface{}) (entity.YearMonth, error) {
 	res, err := scalar.UnmarshalYearMonth(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4230,6 +4570,38 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) unmarshalODate2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx context.Context, v interface{}) (*entity.Date, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := scalar.UnmarshalDate(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODate2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐDate(ctx context.Context, sel ast.SelectionSet, v *entity.Date) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := scalar.MarshalDate(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOGender2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx context.Context, v interface{}) (*model.Gender, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.Gender)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOGender2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx context.Context, sel ast.SelectionSet, v *model.Gender) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) marshalONode2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐNode(ctx context.Context, sel ast.SelectionSet, v model.Node) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -4251,6 +4623,13 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	}
 	res := graphql.MarshalString(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOUpdateBasicInformationPayload2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationPayload(ctx context.Context, sel ast.SelectionSet, v *model.UpdateBasicInformationPayload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UpdateBasicInformationPayload(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOYearMonth2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋentityᚐYearMonth(ctx context.Context, v interface{}) (entity.YearMonth, error) {
