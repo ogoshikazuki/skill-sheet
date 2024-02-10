@@ -50,11 +50,22 @@ func (s *Server) handleHealth() {
 }
 
 func (s *Server) handleGraphQL() {
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolverRoot(
+	c := graph.Config{Resolvers: graph.NewResolverRoot(
 		usecase.NewFindBasicInformationUsecase(repository.NewBasicInformationRepository(s.sqlHandler)),
 		usecase.NewFindProjectUsecase(repository.NewProjectRepository(s.sqlHandler)),
 		usecase.NewSearchProjectsUsecase(repository.NewProjectRepository(s.sqlHandler)),
-	)}))
+	)}
+	c.Directives.Admin = func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error) {
+		if !middleware.IsAuthenticated(ctx) {
+			return nil, entity.ErrUnauthenticated
+		}
+		if !middleware.HasScope(ctx, "admin") {
+			return nil, entity.ErrUnauthorized
+		}
+
+		return next(ctx)
+	}
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(c))
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		var internalServerError *entity.InternalServerError
 		if errors.As(err, &internalServerError) {
@@ -72,6 +83,7 @@ func (s *Server) applyMiddleware() {
 	middlewares := [](func(http.Handler) http.Handler){
 		middleware.CORS(middleware.WithCORSAllowedOrigins(s.cfg.CORSAllowedOrigins)),
 		middleware.Dataloader(s.sqlHandler),
+		middleware.Auth0(s.cfg.Auth0Domain, s.cfg.Auth0Audience),
 	}
 
 	for _, middleware := range middlewares {
