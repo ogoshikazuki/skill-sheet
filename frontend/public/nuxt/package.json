@@ -39,7 +39,7 @@
     "vitest": "^1.2.2",
     "vue": "^3.4.19",
     "vue-router": "^4.2.5",
-    "vuetify": "^3.5.3"
+    "vuetify": "^3.5.4"
   },
   "dependencies": {
     "graphql": "^16.8.1",
