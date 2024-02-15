@@ -65,6 +65,9 @@ func TestBasicInformationRepositoryFind(t *testing.T) {
 				t.Errorf("actual: %s", err)
 			}
 		})
+		if _, err := sqlHandler.ExecContext(ctx, `UPDATE "basic_information" SET "gender" = 'MALE'`); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
 
