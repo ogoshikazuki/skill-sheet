@@ -16,10 +16,12 @@ func MarshalDate(d entity.Date) graphql.Marshaler {
 }
 
 func UnmarshalDate(v interface{}) (entity.Date, error) {
-	date, ok := v.(entity.Date)
+	s, ok := v.(string)
 	if !ok {
 		return "", errors.New("date must be a string")
 	}
+
+	date := entity.Date(s)
 
 	if !date.IsValid() {
 		return "", errors.New("date is invalid")
