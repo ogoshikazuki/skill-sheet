@@ -38,6 +38,15 @@ func (handler *sqlHandler) Close() error {
 	return handler.db.Close()
 }
 
+func (handler *sqlHandler) BeginTx(ctx context.Context) (repository.Tx, error) {
+	t, err := handler.db.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return nil, entity.NewInternalServerError(err)
+	}
+
+	return &tx{tx: t}, nil
+}
+
 func (s *sqlHandler) ExecFromFile(path string) ([]repository.Result, error) {
 	sf := sqlfile.New()
 
@@ -99,6 +108,44 @@ func (r *rows) Next() bool {
 
 func (r *rows) Close() error {
 	return r.rows.Close()
+}
+
+type tx struct {
+	tx *sql.Tx
+}
+
+func (t *tx) ExecContext(ctx context.Context, query string, args ...any) (repository.Result, error) {
+	result, err := t.tx.ExecContext(ctx, query, args...)
+	if err != nil {
+		return nil, entity.NewInternalServerError(err)
+	}
+
+	return result, nil
+}
+
+func (t *tx) QueryContext(ctx context.Context, query string, args ...any) (repository.Rows, error) {
+	rows, err := t.tx.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, entity.NewInternalServerError(err)
+	}
+
+	return rows, nil
+}
+
+func (t *tx) Commit() error {
+	if err := t.tx.Commit(); err != nil {
+		return entity.NewInternalServerError(err)
+	}
+
+	return nil
+}
+
+func (t *tx) Rollback() error {
+	if err := t.tx.Rollback(); err != nil {
+		return entity.NewInternalServerError(err)
+	}
+
+	return nil
 }
 
 func getConnectionString(host, port, user, password, dbname string) string {

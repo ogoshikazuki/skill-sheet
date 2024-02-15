@@ -54,6 +54,7 @@ func (s *Server) handleGraphQL() {
 		usecase.NewFindBasicInformationUsecase(repository.NewBasicInformationRepository(s.sqlHandler)),
 		usecase.NewFindProjectUsecase(repository.NewProjectRepository(s.sqlHandler)),
 		usecase.NewSearchProjectsUsecase(repository.NewProjectRepository(s.sqlHandler)),
+		usecase.NewUpdateBasicInformationUsecase(repository.NewBasicInformationRepository(s.sqlHandler), repository.NewTransactionController(s.sqlHandler)),
 	)}
 	c.Directives.Admin = func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error) {
 		if !middleware.IsAuthenticated(ctx) {

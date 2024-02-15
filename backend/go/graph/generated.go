@@ -58,7 +58,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		UpdateBasicInformation func(childComplexity int, input model.UpdateBasicInformationInput) int
+		UpdateBasicInformation func(childComplexity int, input map[string]interface{}) int
 	}
 
 	Project struct {
@@ -86,7 +86,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	UpdateBasicInformation(ctx context.Context, input model.UpdateBasicInformationInput) (*model.UpdateBasicInformationPayload, error)
+	UpdateBasicInformation(ctx context.Context, input map[string]interface{}) (*model.UpdateBasicInformationPayload, error)
 }
 type ProjectResolver interface {
 	Technologies(ctx context.Context, obj *model.Project) ([]*model.Technology, error)
@@ -154,7 +154,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateBasicInformation(childComplexity, args["input"].(model.UpdateBasicInformationInput)), true
+		return e.complexity.Mutation.UpdateBasicInformation(childComplexity, args["input"].(map[string]interface{})), true
 
 	case "Project.endMonth":
 		if e.complexity.Project.EndMonth == nil {
@@ -441,10 +441,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_updateBasicInformation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.UpdateBasicInformationInput
+	var arg0 map[string]interface{}
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNUpdateBasicInformationInput2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUpdateBasicInformationInput2map(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -727,7 +727,7 @@ func (ec *executionContext) _Mutation_updateBasicInformation(ctx context.Context
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateBasicInformation(rctx, fc.Args["input"].(model.UpdateBasicInformationInput))
+			return ec.resolvers.Mutation().UpdateBasicInformation(rctx, fc.Args["input"].(map[string]interface{}))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.Admin == nil {
@@ -3262,8 +3262,8 @@ func (ec *executionContext) unmarshalInputProjectOrder(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputUpdateBasicInformationInput(ctx context.Context, obj interface{}) (model.UpdateBasicInformationInput, error) {
-	var it model.UpdateBasicInformationInput
+func (ec *executionContext) unmarshalInputUpdateBasicInformationInput(ctx context.Context, obj interface{}) (map[string]interface{}, error) {
+	it := make(map[string]interface{}, len(obj.(map[string]interface{})))
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
@@ -3282,21 +3282,21 @@ func (ec *executionContext) unmarshalInputUpdateBasicInformationInput(ctx contex
 			if err != nil {
 				return it, err
 			}
-			it.Birthday = data
+			it["birthday"] = data
 		case "gender":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gender"))
 			data, err := ec.unmarshalOGender2ᚖgithubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐGender(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Gender = data
+			it["gender"] = data
 		case "academicBackground":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("academicBackground"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AcademicBackground = data
+			it["academicBackground"] = data
 		}
 	}
 
@@ -4265,7 +4265,7 @@ func (ec *executionContext) marshalNTechnology2ᚖgithubᚗcomᚋogoshikazukiᚋ
 	return ec._Technology(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNUpdateBasicInformationInput2githubᚗcomᚋogoshikazukiᚋskillᚑsheetᚋgraphᚋmodelᚐUpdateBasicInformationInput(ctx context.Context, v interface{}) (model.UpdateBasicInformationInput, error) {
+func (ec *executionContext) unmarshalNUpdateBasicInformationInput2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
 	res, err := ec.unmarshalInputUpdateBasicInformationInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }

@@ -1,6 +1,9 @@
 package repository
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 func makePlaceholders(count int) string {
 	var placeholders string
@@ -12,4 +15,14 @@ func makePlaceholders(count int) string {
 	}
 
 	return placeholders
+}
+
+func setUpdate(count int, column string) string {
+	var query string
+	if count > 1 {
+		query += ","
+	}
+	query += fmt.Sprintf(` "%s" = $%d`, column, count)
+
+	return query
 }

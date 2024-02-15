@@ -14,3 +14,13 @@ func convertDirectionFromGraphToEntity(direction model.OrderDirection) entity.Or
 	}
 	return entity.ASC
 }
+
+func setUpdateInput[T any](input map[string]interface{}, field string, f func(v T)) {
+	if v, ok := input[field]; ok {
+		p := (v.(*T))
+		if p == nil {
+			return
+		}
+		f(*p)
+	}
+}

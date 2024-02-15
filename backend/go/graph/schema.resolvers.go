@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ogoshikazuki/skill-sheet/entity"
 	"github.com/ogoshikazuki/skill-sheet/graph/model"
@@ -15,8 +14,41 @@ import (
 )
 
 // UpdateBasicInformation is the resolver for the updateBasicInformation field.
-func (r *mutationResolver) UpdateBasicInformation(ctx context.Context, input model.UpdateBasicInformationInput) (*model.UpdateBasicInformationPayload, error) {
-	panic(fmt.Errorf("not implemented: UpdateBasicInformation - updateBasicInformation"))
+func (r *mutationResolver) UpdateBasicInformation(ctx context.Context, input map[string]interface{}) (*model.UpdateBasicInformationPayload, error) {
+	var usecaseInput entity.UpdateBasicInformationInput
+	setUpdateInput(input, "birthday", func(v entity.Date) {
+		usecaseInput.Birthday = entity.UpdateBirthdayInput{
+			Birthday:  v,
+			IsUpdated: true,
+		}
+	})
+	setUpdateInput(input, "gender", func(v model.Gender) {
+		var gender entity.Gender
+		switch v {
+		case model.GenderMale:
+			gender = entity.Male
+		case model.GenderFemale:
+			gender = entity.Female
+		}
+		usecaseInput.Gender = entity.UpdateGenderInput{
+			Gender:    gender,
+			IsUpdated: true,
+		}
+	})
+	setUpdateInput(input, "academicBackground", func(v string) {
+		usecaseInput.AcademicBackground = entity.UpdateAcademicBackgroundInput{
+			AcademicBackground: v,
+			IsUpdated:          true,
+		}
+	})
+	basicInformation, err := r.updateBasicInformationUsecase.Handle(ctx, usecaseInput)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.UpdateBasicInformationPayload{
+		BasicInformation: convertBasicInformationFromEntityToGraph(basicInformation),
+	}, nil
 }
 
 // BasicInformation is the resolver for the basicInformation field.
@@ -26,19 +58,7 @@ func (r *queryResolver) BasicInformation(ctx context.Context) (*model.BasicInfor
 		return nil, err
 	}
 
-	var gender model.Gender
-	switch output.BasicInformation.Gender {
-	case entity.Male:
-		gender = model.GenderMale
-	case entity.Female:
-		gender = model.GenderFemale
-	}
-	return &model.BasicInformation{
-		ID:                 scalar.NewID("BasicInformation", 0),
-		Birthday:           output.BasicInformation.Birthday,
-		Gender:             gender,
-		AcademicBackground: output.BasicInformation.AcademicBackground,
-	}, nil
+	return convertBasicInformationFromEntityToGraph(output.BasicInformation), nil
 }
 
 // Node is the resolver for the node field.

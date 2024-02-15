@@ -21,6 +21,9 @@ var _ BasicInformationRepository = &BasicInformationRepositoryMock{}
 //			FindFunc: func(contextMoqParam context.Context) (BasicInformation, error) {
 //				panic("mock out the Find method")
 //			},
+//			UpdateFunc: func(ctx context.Context, tx Tx, input UpdateBasicInformationInput) error {
+//				panic("mock out the Update method")
+//			},
 //		}
 //
 //		// use mockedBasicInformationRepository in code that requires BasicInformationRepository
@@ -31,6 +34,9 @@ type BasicInformationRepositoryMock struct {
 	// FindFunc mocks the Find method.
 	FindFunc func(contextMoqParam context.Context) (BasicInformation, error)
 
+	// UpdateFunc mocks the Update method.
+	UpdateFunc func(ctx context.Context, tx Tx, input UpdateBasicInformationInput) error
+
 	// calls tracks calls to the methods.
 	calls struct {
 		// Find holds details about calls to the Find method.
@@ -38,8 +44,18 @@ type BasicInformationRepositoryMock struct {
 			// ContextMoqParam is the contextMoqParam argument value.
 			ContextMoqParam context.Context
 		}
+		// Update holds details about calls to the Update method.
+		Update []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Tx is the tx argument value.
+			Tx Tx
+			// Input is the input argument value.
+			Input UpdateBasicInformationInput
+		}
 	}
-	lockFind sync.RWMutex
+	lockFind   sync.RWMutex
+	lockUpdate sync.RWMutex
 }
 
 // Find calls FindFunc.
@@ -71,5 +87,45 @@ func (mock *BasicInformationRepositoryMock) FindCalls() []struct {
 	mock.lockFind.RLock()
 	calls = mock.calls.Find
 	mock.lockFind.RUnlock()
+	return calls
+}
+
+// Update calls UpdateFunc.
+func (mock *BasicInformationRepositoryMock) Update(ctx context.Context, tx Tx, input UpdateBasicInformationInput) error {
+	if mock.UpdateFunc == nil {
+		panic("BasicInformationRepositoryMock.UpdateFunc: method is nil but BasicInformationRepository.Update was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		Tx    Tx
+		Input UpdateBasicInformationInput
+	}{
+		Ctx:   ctx,
+		Tx:    tx,
+		Input: input,
+	}
+	mock.lockUpdate.Lock()
+	mock.calls.Update = append(mock.calls.Update, callInfo)
+	mock.lockUpdate.Unlock()
+	return mock.UpdateFunc(ctx, tx, input)
+}
+
+// UpdateCalls gets all the calls that were made to Update.
+// Check the length with:
+//
+//	len(mockedBasicInformationRepository.UpdateCalls())
+func (mock *BasicInformationRepositoryMock) UpdateCalls() []struct {
+	Ctx   context.Context
+	Tx    Tx
+	Input UpdateBasicInformationInput
+} {
+	var calls []struct {
+		Ctx   context.Context
+		Tx    Tx
+		Input UpdateBasicInformationInput
+	}
+	mock.lockUpdate.RLock()
+	calls = mock.calls.Update
+	mock.lockUpdate.RUnlock()
 	return calls
 }

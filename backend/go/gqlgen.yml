@@ -94,3 +94,5 @@ models:
     fields:
       technologies:
         resolver: true
+  UpdateBasicInformationInput:
+    model: "map[string]interface{}"

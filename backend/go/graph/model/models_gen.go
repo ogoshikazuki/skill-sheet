@@ -39,12 +39,6 @@ type Technology struct {
 	Name string    `json:"name"`
 }
 
-type UpdateBasicInformationInput struct {
-	Birthday           *entity.Date `json:"birthday,omitempty"`
-	Gender             *Gender      `json:"gender,omitempty"`
-	AcademicBackground *string      `json:"academicBackground,omitempty"`
-}
-
 type UpdateBasicInformationPayload struct {
 	BasicInformation *BasicInformation `json:"basicInformation"`
 }
