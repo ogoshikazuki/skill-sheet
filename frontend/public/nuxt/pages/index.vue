@@ -24,6 +24,10 @@ const externalPages = [
   {
     href: 'https://qiita.com/ogoshikazuki',
     label: 'Qiita'
+  },
+  {
+    href: 'https://zenn.dev/ko_system',
+    label: 'Zenn'
   }
 ]
 </script>
