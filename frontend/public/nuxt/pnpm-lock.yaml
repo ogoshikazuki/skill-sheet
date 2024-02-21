@@ -9,8 +9,8 @@ dependencies:
     specifier: ^16.8.1
     version: 16.8.1
   temporal-polyfill:
-    specifier: ^0.2.1
-    version: 0.2.1
+    specifier: ^0.2.2
+    version: 0.2.2
 
 devDependencies:
   '@graphql-codegen/cli':
@@ -9746,8 +9746,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /temporal-polyfill@0.2.1:
-    resolution: {integrity: sha512-JaCnPrUY0NkisdARpjbYIZ1P1Nt/Bhe7gRxEcboKJZnMkjtjLnmpDjQ8jM6mtpm/KUt4B3ijkkphlX2wKybX1g==}
+  /temporal-polyfill@0.2.2:
+    resolution: {integrity: sha512-eea4W72amDpC3AIbzXrJ4TqyxJqvLl8Mn7jllLJmSr5Cp158gg0mg761pG/omGdtsmFEdo9q6DY4M0XhZ4oYUw==}
     dependencies:
       temporal-spec: 0.2.0
     dev: false
