@@ -13,6 +13,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infrastructure/terraform
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -24,7 +27,7 @@ jobs:
       - run: tflint --init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: tflint -f compact
+      - run: tflint --recursive -f compact
   test:
     runs-on: ubuntu-latest
     steps:
