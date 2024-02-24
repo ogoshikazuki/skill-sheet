@@ -10,6 +10,9 @@ on:
     paths:
       - infrastructure/terraform/**
 
+defaults:
+  run:
+    working-directory: ./infrastructure/terraform
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
       - run: tflint --init
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: tflint -f compact
+      - run: tflint --recursive -f compact
   test:
     runs-on: ubuntu-latest
     steps:
