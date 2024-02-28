@@ -30,6 +30,7 @@ resource "vercel_project" "skill_sheet_admin" {
   name           = "skill-sheet-admin"
   framework      = "nextjs"
   git_repository = local.git_repository
+  ignore_command = "if [ \"$VERCEL_ENV\" == \"production\" ]; then exit 1; else exit 0; fi"
   root_directory = "frontend/admin/nextjs"
 }
 
