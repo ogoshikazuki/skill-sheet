@@ -19,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Auth0Provider
-        domain="dev-871m0xngauhlidbd.us.auth0.com"
-        clientId="qp5ifGZDBabsDxMZJHzAEMJnmF8saTyz"
+        domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN as string}
+        clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string}
         authorizationParams={{
-          redirect_uri: "http://localhost:3000"
+          redirect_uri: process.env.NEXT_PUBLIC_AUTH0_REDIRECT_URI
         }}
       >
         <body className={inter.className}>{children}</body>
