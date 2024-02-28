@@ -39,6 +39,10 @@ resource "auth0_connection_clients" "skill_sheet" {
 }
 
 resource "auth0_user" "admin" {
+  depends_on = [
+    auth0_connection_clients.skill_sheet
+  ]
+
   connection_name = auth0_connection.skill_sheet.name
   email           = var.auth0_admin_email
   email_verified  = true
