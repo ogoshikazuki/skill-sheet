@@ -3,17 +3,11 @@ resource "auth0_client" "auth0_account_management_api_management_client" {
 }
 
 resource "auth0_client" "skill_sheet" {
-  app_type = "spa"
-  name     = "skill-sheet"
-  callbacks = [
-    "http://localhost:3000"
-  ]
-  allowed_logout_urls = [
-    "http://localhost:3000"
-  ]
-  web_origins = [
-    "http://localhost:3000"
-  ]
+  app_type            = "spa"
+  name                = "skill-sheet"
+  callbacks           = var.callbacks
+  allowed_logout_urls = var.allowed_logout_urls
+  web_origins         = var.web_origins
   jwt_configuration {
     alg = "RS256"
   }
