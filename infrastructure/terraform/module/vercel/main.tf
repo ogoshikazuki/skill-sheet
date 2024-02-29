@@ -43,7 +43,7 @@ locals {
   environment_variables = {
     NEXT_PUBLIC_AUTH0_DOMAIN       = var.auth0_domain
     NEXT_PUBLIC_AUTH0_CLIENT_ID    = var.auth0_client_id
-    NEXT_PUBLIC_AUTH0_REDIRECT_URI = vercel_project_domain.skill_sheet_admin.domain
+    NEXT_PUBLIC_AUTH0_REDIRECT_URI = "https://${vercel_project_domain.skill_sheet_admin.domain}"
   }
 }
 

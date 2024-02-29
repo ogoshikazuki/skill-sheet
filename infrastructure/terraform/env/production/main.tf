@@ -6,6 +6,9 @@ module "auth0" {
   auth0_client_secret  = var.auth0_client_secret
   auth0_admin_email    = var.auth0_admin_email
   auth0_admin_password = var.auth0_admin_password
+  callbacks            = ["https://${module.vercel.admin_domain}"]
+  allowed_logout_urls  = ["https://${module.vercel.admin_domain}"]
+  web_origins          = ["https://${module.vercel.admin_domain}"]
 }
 
 module "vercel" {

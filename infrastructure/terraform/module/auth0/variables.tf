@@ -19,3 +19,15 @@ variable "auth0_admin_password" {
   type      = string
   sensitive = true
 }
+
+variable "callbacks" {
+  type = list(string)
+}
+
+variable "allowed_logout_urls" {
+  type = list(string)
+}
+
+variable "web_origins" {
+  type = list(string)
+}
