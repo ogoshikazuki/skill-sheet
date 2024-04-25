@@ -40,7 +40,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	github.com/rs/cors v1.10.1
+	github.com/rs/cors v1.11.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/sosodev/duration v1.2.0 // indirect
 	github.com/urfave/cli/v2 v2.27.1 // indirect
