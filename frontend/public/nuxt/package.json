@@ -19,7 +19,7 @@
     "@graphql-codegen/client-preset": "4.2.6",
     "@graphql-codegen/near-operation-file-preset": "^3.0.0",
     "@graphql-codegen/typescript": "^4.0.7",
-    "@graphql-codegen/typescript-operations": "^4.2.0",
+    "@graphql-codegen/typescript-operations": "^4.2.1",
     "@graphql-codegen/typescript-vue-apollo": "^4.1.1",
     "@mdi/font": "^7.4.47",
     "@nuxt/test-utils": "^3.13.0",
