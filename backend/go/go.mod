@@ -8,7 +8,7 @@ require (
 	github.com/cockroachdb/errors v1.11.1
 	github.com/matryer/moq v0.3.4
 	github.com/tanimutomo/sqlfile v1.0.0
-	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/vektah/gqlparser/v2 v2.5.12
 	github.com/vikstrous/dataloadgen v0.0.6
 )
 
