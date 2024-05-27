@@ -5,7 +5,7 @@ go 1.21.5
 require (
 	github.com/99designs/gqlgen v0.17.47
 	github.com/auth0/go-jwt-middleware/v2 v2.2.1
-	github.com/cockroachdb/errors v1.11.1
+	github.com/cockroachdb/errors v1.11.2
 	github.com/matryer/moq v0.3.4
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/vektah/gqlparser/v2 v2.5.12
