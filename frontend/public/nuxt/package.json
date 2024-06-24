@@ -42,7 +42,7 @@
     "vuetify": "^3.6.10"
   },
   "dependencies": {
-    "graphql": "^16.8.2",
+    "graphql": "^16.9.0",
     "temporal-polyfill": "^0.2.5"
   }
 }
