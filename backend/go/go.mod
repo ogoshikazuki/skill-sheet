@@ -1,11 +1,13 @@
 module github.com/ogoshikazuki/skill-sheet
 
 go 1.21.5
+toolchain go1.23.0
+
 require (
 	github.com/99designs/gqlgen v0.17.48
 	github.com/auth0/go-jwt-middleware/v2 v2.2.1
 	github.com/cockroachdb/errors v1.11.3
-	github.com/matryer/moq v0.4.0
+	github.com/matryer/moq v0.5.0
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/vektah/gqlparser/v2 v2.5.16
 	github.com/vikstrous/dataloadgen v0.0.6
