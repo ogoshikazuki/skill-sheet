@@ -36,7 +36,7 @@ devDependencies:
     version: 7.4.47
   '@nuxt/test-utils':
     specifier: ^3.14.2
-    version: 3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.4)(vue@3.5.4)
+    version: 3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.5)(vue@3.5.4)
   '@nuxtjs/apollo':
     specifier: 5.0.0-alpha.14
     version: 5.0.0-alpha.14(typescript@5.6.2)(vue@3.5.4)
@@ -83,8 +83,8 @@ devDependencies:
     specifier: ^3.5.4
     version: 3.5.4(typescript@5.6.2)
   vue-router:
-    specifier: ^4.4.4
-    version: 4.4.4(vue@3.5.4)
+    specifier: ^4.4.5
+    version: 4.4.5(vue@3.5.4)
   vuetify:
     specifier: ^3.7.1
     version: 3.7.1(typescript@5.6.2)(vite-plugin-vuetify@2.0.4)(vue@3.5.4)
@@ -2779,7 +2779,7 @@ packages:
       - webpack-sources
     dev: true
 
-  /@nuxt/test-utils@3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.4)(vue@3.5.4):
+  /@nuxt/test-utils@3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.5)(vue@3.5.4):
     resolution: {integrity: sha512-n5soEpHom9aL9sMwrBiD3xGR+oXbx+O8zL2NF9aelWOTSzPPNN+Qo3cBEECMc6NYQi1a4LbCKkPjQfbtPvaqkg==}
     engines: {node: '>=18.20.4'}
     peerDependencies:
@@ -2848,9 +2848,9 @@ packages:
       unplugin: 1.14.1
       vite: 5.4.4
       vitest: 2.1.0(happy-dom@15.7.4)
-      vitest-environment-nuxt: 1.0.1(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.4)(vue@3.5.4)
+      vitest-environment-nuxt: 1.0.1(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.5)(vue@3.5.4)
       vue: 3.5.4(typescript@5.6.2)
-      vue-router: 4.4.4(vue@3.5.4)
+      vue-router: 4.4.5(vue@3.5.4)
     transitivePeerDependencies:
       - magicast
       - rollup
@@ -8354,13 +8354,13 @@ packages:
       unenv: 1.10.0
       unimport: 3.11.1(rollup@4.21.2)
       unplugin: 1.14.1
-      unplugin-vue-router: 0.10.2(vue-router@4.4.4)(vue@3.5.4)
+      unplugin-vue-router: 0.10.2(vue-router@4.4.5)(vue@3.5.4)
       unstorage: 1.10.2(ioredis@5.4.1)
       untyped: 1.4.2
       vue: 3.5.4(typescript@5.6.2)
       vue-bundle-renderer: 2.1.0
       vue-devtools-stub: 0.1.0
-      vue-router: 4.4.4(vue@3.5.4)
+      vue-router: 4.4.5(vue@3.5.4)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -10392,7 +10392,7 @@ packages:
       normalize-path: 2.1.1
     dev: true
 
-  /unplugin-vue-router@0.10.2(vue-router@4.4.4)(vue@3.5.4):
+  /unplugin-vue-router@0.10.2(vue-router@4.4.5)(vue@3.5.4):
     resolution: {integrity: sha512-aG1UzB96cu4Lu+EdQxl22NIKFrde5b+k568JdsaJ2gzPqnQufPk2j1gCA5DxFfGz9zg4tYTqy2A2JHForVbyXg==}
     peerDependencies:
       vue-router: ^4.4.0
@@ -10412,7 +10412,7 @@ packages:
       pathe: 1.1.2
       scule: 1.3.0
       unplugin: 1.14.1
-      vue-router: 4.4.4(vue@3.5.4)
+      vue-router: 4.4.5(vue@3.5.4)
       yaml: 2.5.0
     transitivePeerDependencies:
       - rollup
@@ -10796,10 +10796,10 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /vitest-environment-nuxt@1.0.1(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.4)(vue@3.5.4):
+  /vitest-environment-nuxt@1.0.1(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.5)(vue@3.5.4):
     resolution: {integrity: sha512-eBCwtIQriXW5/M49FjqNKfnlJYlG2LWMSNFsRVKomc8CaMqmhQPBS5LZ9DlgYL9T8xIVsiA6RZn2lk7vxov3Ow==}
     dependencies:
-      '@nuxt/test-utils': 3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.4)(vue@3.5.4)
+      '@nuxt/test-utils': 3.14.2(@playwright/test@1.47.0)(h3@1.12.0)(happy-dom@15.7.4)(nitropack@2.9.7)(vite@5.4.4)(vitest@2.1.0)(vue-router@4.4.5)(vue@3.5.4)
     transitivePeerDependencies:
       - '@cucumber/cucumber'
       - '@jest/globals'
@@ -10980,8 +10980,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router@4.4.4(vue@3.5.4):
-    resolution: {integrity: sha512-3MlnDqwRwZwCQVbtVfpsU+nrNymNjnXSsQtXName5925NVC1+326VVfYH9vSrA0N13teGEo8z5x7gbRnGjCDiQ==}
+  /vue-router@4.4.5(vue@3.5.4):
+    resolution: {integrity: sha512-4fKZygS8cH1yCyuabAXGUAsyi1b2/o/OKgu/RUb+znIYOxPRxdkytJEx+0wGcpBE1pX6vUgh5jwWOKRGvuA/7Q==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
