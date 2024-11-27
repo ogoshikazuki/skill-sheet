@@ -7,7 +7,7 @@ require (
 	github.com/cockroachdb/errors v1.11.3
 	github.com/matryer/moq v0.4.0
 	github.com/tanimutomo/sqlfile v1.0.0
-	github.com/vektah/gqlparser/v2 v2.5.19
+	github.com/vektah/gqlparser/v2 v2.5.20
 	github.com/vikstrous/dataloadgen v0.0.6
 )
 
@@ -31,7 +31,7 @@ require (
 )
 
 require (
-	github.com/agnivade/levenshtein v1.1.1 // indirect
+	github.com/agnivade/levenshtein v1.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
